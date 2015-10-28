@@ -1,0 +1,120 @@
+<<echo=FALSE, results=hide>>=
+## auxiliary function for display of matrices
+toLatex.matrix <- function(object, olat = FALSE, ...)
+{
+  ## workaround for OLAT's mis-layouting of matrices
+  olat <- if(is.null(olat)) FALSE else !identical(olat, FALSE)
+  collapse <- if(olat) " & \\\\phantom{.} & " else " & "
+  nc <- if(olat) ncol(object) * 2 - 1 else ncol(object)
+  
+  ## collapse matrix to LaTeX code lines
+  tmp <- apply(object, 1, paste, collapse = collapse)
+  tmp <- paste(tmp, collapse = " \\\\\\\\ ")
+  tmp <- paste("\\\\left( \\\\begin{array}{",
+    paste(rep("r", nc), collapse = ""), "} ",
+    tmp,
+    " \\\\end{array} \\\\right)", sep = "")
+  return(tmp)
+}
+@
+
+
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+l <- matrix(data = sample(1:9,9), nrow = 3, ncol = 3)
+aM <- matrix(data = sample(20:30,6), nrow = 3, ncol = 2)
+
+aMV <- matrix(data = aM[,1], nrow = 1, ncol = 3)
+
+kJ <- aMV %*% l
+
+p <- matrix(data = sample(10:40,3), nrow = 1, ncol = 3)
+uM <- p %*% aM
+
+kS <- matrix(data = sample(25:45,3), nrow = 1, ncol = 3)
+kJT <- t(kJ)
+bk <- 1/60*kS %*% kJT
+
+kRHB <- matrix(data = sample(seq(1,2, by=0.1),3), nrow = 1, ncol = 3)
+z <- sum(kRHB %*% aM)
+gk <- z + bk[1,1]
+g <- uM[1,1] - gk
+
+a <- sprintf("M1: %d, M2: %d, M3: %d",kJ[1,1],kJ[1,2],kJ[1,3])
+b <- sprintf("Monat 1: %d, Monat 2: %d",uM[1,1],uM[1,2])
+@
+
+
+\begin{question}
+
+Wir stellen drei Produkte (P1, P2, P3) auf drei Maschinen (M1, M2, M3) her. Die notwendigen Maschinenlaufzeiten pro Minute pro Produkt sind wie folgt (Produkte $\times$ Maschinen):
+
+\begin{align*}
+\Sexpr{toLatex(l)}
+\end{align*}
+
+Für die kommenden zwei Monate sind folgende Absatzzahlen geplant (Produkte $\times$ Monate):
+
+\begin{align*}
+\Sexpr{toLatex(aM)}
+\end{align*}
+
+\begin{answerlist}
+  \item Welche Kapazität pro Maschine wird zur Herstellung der Planmenge im ersten Monat benötigt?
+  \item Die Preise für die Produkte sind P1 \Sexpr{p[1,1]}, P2 \Sexpr{p[1,2]}, P3 \Sexpr{p[1,3]}. Wie hoch ist der erwartete Gesamtumsatz für beide Monate?
+  \item Wie hoch sind die Betriebskosten im Januar, wenn mit folgenden Kosten pro Stunde kalkuliert wird: M1 \Sexpr{kS[1,1]}, M2 \Sexpr{kS[1,2]}, M3 \Sexpr{kS[1,3]}.
+  \item Zu den Betriebskosten kommen im ersten Monat noch Kosten für RHB (Roh-, Hilfs- und Betriebsstoffe) sowie Vorprodukte in Höhe von P1 \Sexpr{kRHB[1,1]}, P2 \Sexpr{kRHB[1,2]}, P3 \Sexpr{kRHB[1,3]} hinzu. Wie Hoch ist der Gewinn im ersten Monat?
+\end{answerlist}
+
+\end{question}
+
+
+\begin{solution}
+
+zu (a):
+
+Zu beachten ist wieder, dass die Matrizen für die Multiplikation zusammen passen. Um eine Aussage (Monat $\times$ Maschinen) zu erhalten, müssen wir wie folgt multiplizieren: $(Monate \times Produkte) * (Produkte \times Maschinen)$. Da uns nur die Kapazität im Januar interessiert, benötigen wir von der entsprechenden Matrix auch nur eine Zeile, d.h. einen Vektor für die Berechnung. So ergibt sich:
+
+
+\begin{align*}
+\Sexpr{toLatex(aMV)} \cdot \Sexpr{toLatex(l)} = \Sexpr{toLatex(kJ)}
+\end{align*}
+
+Zur Kontrolle an dieser Stelle vielleicht noch einmal einen Blick auf die Dimensionen der Matrizen: $(1 \times 3) * (3 \times 3)$ ist multiplizierbar und ergbit (1 $\times$ 3), da der mittlere Wert wegfällt.
+
+zu (b):
+
+Wir bilden einen (Preis $\times$ Produkt) - Vektor und multiplizieren diesen von links mit der (Produkt $\times$ Monat) - Matrix und erhalten folgenden Vektor der jeweiligen Monatsumsätze:
+
+\begin{align*}
+\Sexpr{toLatex(p)} \cdot \Sexpr{toLatex(aM)} = \Sexpr{toLatex(uM)}
+\end{align*}
+
+zu (c):
+
+Zu beachten ist bei dieser Teilaufgabe, dass die Angaben in unterschiedlichen Dimensionen vorliegen. In Teilaufgabe (a) berechneten wir die benötigten Maschinenlaufzeiten in Minuten, hier liegen die entsprechenden Kosten jedoch in pro Stunde vor. Wir müssen daher den Kostenvektor vorab in Kosten/Minute umrechnen. Anschließend wird der Vektor (Kosten $\times$ Minute) mit der Matrix (Minuten $\times$ Monat) multipliziert und wir erhalten eine Aussage über die Kosten pro Monat:
+
+\begin{align*}
+\frac{1}{60} \cdot \Sexpr{toLatex(kS)} \cdot \Sexpr{toLatex(kJT)} = \Sexpr{round(bk[1,1],2)}
+\end{align*}
+
+zu (d):
+
+Aus den Zahlen kann ein (Kosten $\times$ Produkt) - Vektor gebildet werden $\Sexpr{toLatex(kRHB)}$:
+
+Diesen multiplizieren wir mit dem Spaltenvektor (Produkte $\times$ Monat(e)) und erhalten Zusatzkosten in Höhe von \Sexpr{round(z,2)}. Somit ergeben sich für den ersten Monat Gesamtkosten in Höhe von \Sexpr{round(gk,2)} (siehe Aufgabe (c)) und damit ein Gewinn in Höhe von $\Sexpr{uM[1,1]} (aus (b)) - \Sexpr{round(gk,2)} = \Sexpr{round(g,2)}$.
+
+Lösungsübersicht:
+\begin{answerlist}
+ \item Kapaztit pro Maschine: M1: \Sexpr{kJ[1,1]}, M2: \Sexpr{kJ[1,2]} M3: \Sexpr{kJ[1,3]}
+ \item Umsatz pro Monat: Monat 1: \Sexpr{uM[1,1]}, Monat 2: \Sexpr{kJ[1,2]}
+ \item Betriebskosten: \Sexpr{round(bk[1,1],2)}
+\item Gewinn: \Sexpr{round(g,2)}
+\end{answerlist}
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{cloze}
+%% \exsolution{\Sexpr{a}|\Sexpr{b}|\Sexpr{round(bk[1,1],2)}|\Sexpr{round(g,2)}}
+%% \exclozetype{string|string|num|num}

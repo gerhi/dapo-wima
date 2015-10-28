@@ -1,0 +1,95 @@
+<<echo=FALSE, results=hide>>=
+## auxiliary function for display of matrices
+toLatex.matrix <- function(object, olat = FALSE, ...)
+{
+  ## workaround for OLAT's mis-layouting of matrices
+  olat <- if(is.null(olat)) FALSE else !identical(olat, FALSE)
+  collapse <- if(olat) " & \\\\phantom{.} & " else " & "
+  nc <- if(olat) ncol(object) * 2 - 1 else ncol(object)
+  
+  ## collapse matrix to LaTeX code lines
+  tmp <- apply(object, 1, paste, collapse = collapse)
+  tmp <- paste(tmp, collapse = " \\\\\\\\ ")
+  tmp <- paste("\\\\left( \\\\begin{array}{",
+    paste(rep("r", nc), collapse = ""), "} ",
+    tmp,
+    " \\\\end{array} \\\\right)", sep = "")
+  return(tmp)
+}
+@
+
+
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+r1 <- matrix(data = c(sample(seq(1,5, by=1),1),0,0,0), nrow = 1, ncol = 4)
+r2 <- matrix(data = sample(seq(1,5, by=1),4), nrow = 1, ncol = 4)
+r3 <- matrix(data = c(sample(seq(1,5, by=1),2),0,sample(seq(1,5, by=1),1)), nrow = 1, ncol = 4)
+rV <- rbind(r1, r2, r3)
+
+z1 <- matrix(data = sample(seq(1,5, by=1),4), nrow = 4, ncol = 1)
+z2 <- matrix(data = c(sample(seq(1,5, by=1),2),0,sample(seq(1,5, by=1),1)), nrow = 4, ncol = 1)
+zV <- cbind(z1, z2)
+
+e <- rV %*% zV
+
+p <- matrix(data = sample(seq(10,20, by=1),3), nrow = 1, ncol = 3)
+
+pE <- p %*% e
+
+
+aRandom1 <- sample(1:3,1)
+aRandom2 <- sample(1:2,1)
+a <- sprintf("Menge R%d für E%d: %d; Kosten: E1: %d, E2: %d",aRandom1,aRandom2,e[aRandom1,aRandom2],pE[1,1],pE[1,2])
+@
+
+
+\begin{question}
+
+\begin{enumerate}
+  \item Die Rohstoffe 1, 2, 3 werden für die Zwischenprodukte 1, 2, 3, 4 in folgenden Mengen benötigt: R1/Z1: \Sexpr{rV[1,1]}, R2/Z1: \Sexpr{rV[2,1]}, R2/Z2: \Sexpr{rV[2,2]}, R2/Z3: \Sexpr{rV[2,3]}, R2/Z4: \Sexpr{rV[2,4]}, R3/Z1: \Sexpr{rV[3,1]}, R3/Z2: \Sexpr{rV[3,2]}, R3/Z4: \Sexpr{rV[3,4]}. Aus den vier Zwischenprodukten werden zwei Endprodukte wie folgt gefertigt: aus \Sexpr{zV[1,1]} Z1, \Sexpr{zV[2,1]} Z2, \Sexpr{zV[3,1]} Z3, und \Sexpr{zV[4,1]} Z4 wird 1 \textbf{Endprodukt 1} aus \Sexpr{zV[1,2]} Z1, \Sexpr{zV[2,2]} Z2 und \Sexpr{zV[4,2]} Z4 wird 1 \textbf{Endprodukt 2}. Welche Mengen der jeweiligen Rohstoffe benötigen Sie für die jeweiligen Endprodukte? (z.B. Wie viel des Rohstoffs \Sexpr{aRandom1} benötigen Sie für Endprodukt \Sexpr{aRandom2}?)
+  \item Wie viel kosten die Rohstoffe für die Endprodukte, wenn die Preise für R1 \Sexpr{p[1,1]}GE, für R2 \Sexpr{p[1,2]}GE und für R3 \Sexpr{p[1,3]}GE sind?
+\end{enumerate}
+
+\end{question}
+
+
+
+\begin{solution}
+
+zu (a):
+
+Aus den Angaben zum Rohstoffverbrauch für die Zwischenprodukte ergibt sich folgende (Rohstoffe $\times$ Zwischenprodukte) - Matrix:
+
+\begin{align*}
+\Sexpr{toLatex(rV)}.
+\end{align*}
+
+Aus den Angaben zum Verbrauch der Zwischenprodukte für die Endprodukte ergibt sich folgende (Zwischenprodukte $\times$ Endprodukte) - Matrix:
+
+\begin{align*}
+\Sexpr{toLatex(zV)}.
+\end{align*}
+
+Es sei noch einmal darauf hingwiesen, dass die Matrizen auch anders formuliert werden könnten, d.h. jede transponierte Matrix währe ebenfalls richtig.
+
+Um zu ermitteln, wie viel welchen Rohstoffs für welches Endprodukt verbraucht wird, müssen wir die Matrizen multiplizieren. Die Multiplikation muss so erfolgen, dass die Zwischenprodukte als Information quasi verloren gehen. Da die oben stehenden Matrizen bereits passend formuliert wurden, kann nun wie folgt multipliziert werden:
+
+\begin{align*}
+\Sexpr{toLatex(rV)} \cdot \Sexpr{toLatex(zV)} = \Sexpr{toLatex(e)}.
+\end{align*}
+
+So wie die Inhalte $(Rohstoffe \times Zwischenprodukte) \cdot (Zwischenprodukte \times Endprodukte) = (Rohstoffe \times Endprodukte)$ mache man sich vorab die Dimensionen der Matrizen klar: $(3 \times 4) \cdot (4 \times 2) = (3 \times 2)$.
+
+zu (b):
+
+Uns liegt derzeit eine (Rohstoffe $\times$ Endprodukte) - Matrix vor. Da die Rohstoffe im Ergebnis als Information untergegangen sein müssen, können wir die vorliegenden Preisinformation in Form einer (Euro $\times$ Rohstoffe) - Matrix notieren und dann die vorhandene Tabelle von Links mit dem neuen Vektor multiplizieren:
+
+\begin{align*}
+\Sexpr{toLatex(p)} \cdot \Sexpr{toLatex(e)} = \Sexpr{toLatex(pE)}.
+\end{align*}
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{string}
+%% \exsolution{\Sexpr{a}}

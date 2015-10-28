@@ -1,0 +1,47 @@
+<<echo=FALSE, results=hide>>=
+
+## DATA GENERATION
+a <- sample(as.integer(seq(60000,150000, by=5000)), 1)
+
+z <- sample(seq(2,6, by=1), 1)
+z1 <- z/100+1
+
+j <- sample(seq(10,15, by=1), 1)
+
+r <- sample(seq(1000,5000, by=500), 1)
+
+## QUESTION/ANSWER GENERATION
+e1 <- a*z1^j
+eR <- r*((z1^j-1)/(z1-1))*z1
+e2 <- e1-eR
+
+@
+
+
+
+\begin{question}
+
+Heinz S. hat bis zu seiner Rente mühsam Geld angesammelt. Nun befinden sich \Sexpr{a} € auf seinem Sparkonto. Dieses wird mit \Sexpr{z}\% jährlich verzinst. Auf welchen Betrag ist das Sparkonto nach 10 Jahren gesunken, wenn Heinz sich nun zu Beginn jeden Jahres \Sexpr{r} € auszahlen lässt?
+
+\end{question}
+
+
+\begin{solution}
+
+\begin{itemize}
+  \item Würde man kein Geld abheben, so wäre der Endwert nach 10 Jahren: $\Sexpr{a} \cdot \Sexpr{z1}^{\Sexpr{j}} = \Sexpr{round(e1,2)}$
+	\item Die Auszahlungen entsprechen einer vorschüssigen Zeitrente von 10 Jahren. Diese hat einen Endwert in Höhe von: $R_10^v = \Sexpr{r} \cdot \frac{\Sexpr{z1}^{\Sexpr{j}} - 1}{\Sexpr{z1} - 1} \cdot \Sexpr{z1} = \Sexpr{round(eR,2)}$
+	\item Damit haben wir am Ende noch ein Kapital in Höhe von $K_{10} = \Sexpr{round(e1,2)} - \Sexpr{round(eR,2)} = \Sexpr{round(e2,2)}$
+\end{itemize}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(e2,2)}}
+%% \exname{Rente - Endbetrag bei jährlicher Auszahlung}
+%% \extol{0.5}
+

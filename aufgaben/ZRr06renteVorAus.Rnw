@@ -1,0 +1,46 @@
+<<echo=FALSE, results=hide>>=
+
+## DATA GENERATION
+k <- sample(seq (50,600, by=50), 1)
+
+j <- sample(10:15, 1)
+
+z <- sample(seq (1,6, by=1), 1)
+z1 <- z/100
+z2 <- z1+1
+
+## QUESTION/ANSWER GENERATION
+rVor <- k*(12+z1*13/2)
+rNach <- rVor*(z2^j-1)/(z2-1)*1/z2^j
+
+@
+
+
+
+\begin{question}
+Welches Kapital benötigen Sie, um sich bei einem Zinssatz von \Sexpr{z}\% \Sexpr{j} Jahre lang monatlich vorschüssig eine Rente von \Sexpr{k} € auszahlen lassen zu können?
+
+
+\end{question}
+
+
+
+\begin{solution}
+
+\begin{itemize}
+  \item Die monatliche Rente hat ein Jahresäquivalent von $R_k^{vor} = \Sexpr{k} \cdot (12 + \frac{\Sexpr{z1} \cdot 13}{2}) = \Sexpr{round(rVor,2)}$
+	\item Dieser Betrag als jährlich nachschüssig gezahlte Rente entspricht einem Anfangswert von $R_0^{nach} = \Sexpr{round(rVor,2)} \cdot \frac{\Sexpr{z2}^{\Sexpr{j}} - 1}{\Sexpr{z2} - 1} \cdot \frac{1}{\Sexpr{z2}^{\Sexpr{j}}} = \Sexpr{round(rNach,2)}$
+\end{itemize}
+
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(rNach,2)}}
+%% \exname{Rente Kapital für Rente}
+%% \extol{0.5}
+

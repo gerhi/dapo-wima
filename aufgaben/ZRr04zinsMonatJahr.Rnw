@@ -1,0 +1,42 @@
+<<echo=FALSE, results=hide>>=
+
+## DATA GENERATION
+z <- sample(seq (1.5,6.5, by=0.5), 1)
+z1 <- z/100
+
+## QUESTION/ANSWER GENERATION
+p <- (1+z1/12)^12
+p1 <- p - 1
+pEnd <- p1*100
+
+@
+
+
+
+\begin{question}
+
+Welcher effektive Jahreszins entspricht einem Zinssatz von \Sexpr{z}\% bei monatlicher Zinsgutschrift?
+
+\end{question}
+
+
+\begin{solution}
+\begin{align*}
+  && \left(1 + \frac{p}{100} \right) &= \left(1 + \frac{\Sexpr{z1}}{12}\right)^{12} \\
+	&\Leftrightarrow& \left(1 + \frac{p}{100}\right) &= \Sexpr{round(p,4)} \\
+	&\Leftrightarrow& p\% &= \Sexpr{round(p1,4)}
+\end{align*}
+
+Der effektive Jahreszins beträgt dann also \Sexpr{round(pEnd,2)}\%.
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(pEnd,2)}}
+%% \exname{Zinsrechnung effektiver Jahreszins}
+%% \extol{0.5}
+

@@ -1,0 +1,62 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+a <- sample(as.integer(seq(70000,120000, by=10000)), 1)
+r <- sample(seq(500,800, by=100), 1)
+
+z <- sample(seq(3,5, by=1), 1)
+z1 <- z/100
+z2 <- z1+1
+
+## QUESTION/ANSWER GENERATION
+jR <- r*(12+(z1*13)/2)
+n <- log(jR/(jR-a*z1))/log(z2)
+
+@
+
+
+
+\begin{question}
+
+Von einem Guthaben in Höhe von \Sexpr{a} € sollen jeweils am Monatsanfang gleichbleibende Rentenraten in Höhe von \Sexpr{r} € ausgezahlt werden. Wie lange wird das Guthaben bei einem Zinssatz von \Sexpr{z}\% pro Jahr reichen?
+
+\end{question}
+
+
+\begin{solution}
+
+\begin{itemize}
+  \item Die ausbezahlten \Sexpr{r} € entsprechen einer nachschüssig ausgezahlten Jahresrente in Höhe von: $R_k^{vor} = \Sexpr{r} \cdot (12 + \frac{\Sexpr{z1} \cdot 13}{2}) = \Sexpr{round(jR,2)}$
+	\item Die nachschüssig ausgezahlten Jahresrenten sind heute \Sexpr{a} € Wert, d.h.
+	\begin{align*}
+		&& \Sexpr{a} &= \Sexpr{round(jR,2)} \cdot \frac{\Sexpr{z2}^n - 1}{\Sexpr{z2} - 1} \cdot \frac{1}{\Sexpr{z2}^n} \\
+	\intertext{Diesn Term müssen wir jetzt "'nur"' noch umformen. Zuerst einmal multiplizieren wir mit den Nennern, wobei $\Sexpr{z2} - 1 = \Sexpr{z1}$ ist:}
+		&\Leftrightarrow & \Sexpr{a} \cdot \Sexpr{z1} \cdot \Sexpr{z2}^n &= \Sexpr{round(jR,2)} \cdot (\Sexpr{z2}^n - 1) \\
+	\intertext{Jetzt die Klammer auflösen. Ziel ist es, die Potenz "'hoch"' n zu isolieren, um den Logarithmus anwenden zu können:}
+		&\Leftrightarrow & \Sexpr{a} \cdot \Sexpr{z1} \cdot \Sexpr{z2}^n &= \Sexpr{round(jR,2)} \cdot \Sexpr{z2}^n - \Sexpr{round(jR,2)} \\
+	\intertext{$+\Sexpr{round(jR,2)}$ und - $\Sexpr{a} \cdot \Sexpr{z1} \cdot \Sexpr{z2}^n$, um die Potenzen auf die rechte Seite, den Summanden ohne Potenz auf die linke Seite zu bekommen:}
+		&\Leftrightarrow & \Sexpr{round(jR,2)} &=  \Sexpr{round(jR,2)} \cdot \Sexpr{z2}^n - \Sexpr{a} \cdot \Sexpr{z1} \cdot \Sexpr{z2}^n \\
+	\intertext{Jetzt $\Sexpr{z2}^n$ ausklammern, um die Potenz weiter zu isolieren:}
+		&\Leftrightarrow & \Sexpr{round(jR,2)} &= (\Sexpr{round(jR,2)} - \Sexpr{a} \cdot \Sexpr{z1}) \cdot \Sexpr{z2}^n \\
+	\intertext{Durch die Klammer vor teilen, dann steht $1,04^n$ auf der rechten Seite alleine:}
+		&\Leftrightarrow & \frac{\Sexpr{round(jR,2)}}{(\Sexpr{round(jR,2)} - \Sexpr{a} \cdot \Sexpr{z1})} &= \Sexpr{z2}^n \\
+	\intertext{Jetzt können wir den Logarithmus anwenden:}
+		&\Leftrightarrow & \log\left(\frac{\Sexpr{round(jR,2)}}{(\Sexpr{round(jR,2)} - \Sexpr{a} \cdot \Sexpr{z1})}\right) &= \log(\Sexpr{z2}^n) \\
+	\intertext{Auf der rechten Seite wird nun das Logarithmusgesetzt angewendet: $\log(a^b) = b \cdot \log(a)$:}
+		&\Leftrightarrow & \log\left(\frac{\Sexpr{round(jR,2)}}{(\Sexpr{round(jR,2)} - \Sexpr{a} \cdot \Sexpr{z1})}\right) &= n \cdot \log(\Sexpr{z2}) \\
+	\intertext{Als letzten Schritt teilen wir noch durch $\log(\Sexpr{z2})$ und drehen die Gleichung noch um, weil's schöner aussieht:}
+		&\Leftrightarrow & n &= \frac{\log\left(\frac{\Sexpr{round(jR,2)}}{(\Sexpr{round(jR,2)} - \Sexpr{a} \cdot \Sexpr{z1})}\right)}{\log(\Sexpr{z2})} \\
+	\intertext{Taschenrechner:}
+		&\Leftrightarrow & n &= \Sexpr{round(n,2)}
+	\end{align*}
+\end{itemize}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(n,2)}}
+%% \exname{Rentenrechnung - gleichbleibende Rentenraten}
+%% \extol{0.5}

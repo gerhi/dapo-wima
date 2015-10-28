@@ -1,0 +1,55 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+a <- sample(as.integer(seq(100000,200000, by=10000)), 1)
+j <- sample(seq(10,20, by=1), 1)
+
+z <- sample(seq(3,5, by=1), 1)
+z1 <- z/100
+z2 <- z1+1
+
+## QUESTION/ANSWER GENERATION
+aJ <- (z2^j-1)/(z2-1)*1/z2^j
+aJ2 <- a/aJ 
+
+mJ <- 12+(z1*13)/2
+mJ2 <- aJ2/mJ
+
+@
+
+
+
+\begin{question}
+
+Sie wollen sich ein Guthaben von \Sexpr{a} € so aufteilen, dass Sie sich bei einem Zinssatz von \Sexpr{z}\% \Sexpr{j} Jahre lang jeden Monatsanfang einen gleichbleibenden Betrag auszahlen lassen können. Welchen Betrag können Sie sich auszahlen lassen?
+
+\end{question}
+
+
+\begin{solution}
+
+\begin{itemize}
+  \item Zuerst berechnen wir, welchen Betrag wir uns jährlich nachschüssig auszahlen lassen können: 
+	\begin{align*}
+		 R_0^{nach} &= R_k \cdot \frac{q^n - 1}{q-1} \cdot \frac{1}{q^n} \\
+		 \Sexpr{a} &= R_k \cdot \frac{\Sexpr{z2}^{\Sexpr{j}} - 1}{\Sexpr{z2} - 1} \cdot \frac{1}{\Sexpr{z2}^{\Sexpr{j}}} \\
+		 \Sexpr{a} &= R_k \cdot \Sexpr{round(aJ,3)} \\
+		 R_k &= \Sexpr{round(aJ2,2)}
+	\end{align*}
+	\item Nun teilen wir diese nachschüssig gezahlte Rentenzahlung auf monatlich vorschüssige Zahlungen auf:
+	\begin{align*}
+		R_k^{nach} &= R \cdot \left(12 + \frac{\Sexpr{z1} \cdot 13}{2}\right) \\
+		\Sexpr{round(aJ2,2)} &= R \cdot \Sexpr{round(mJ,3)} \\
+		R &= \Sexpr{round(mJ2,2)}
+	\end{align*}
+\end{itemize}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(mJ2,2)}}
+%% \exname{Rentenrechnung - monatlich vorschüssige Rentenzahlung}
+%% \extol{0.5}

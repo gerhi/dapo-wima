@@ -1,0 +1,68 @@
+<<echo=FALSE, results=hide>>=
+
+## DATA GENERATION
+k <- sample(seq (1000,20000, by=1000), 1)
+j <- sample(seq(3,9, by=1), 1)
+
+z1 <- sample(seq(1,6, by=1), 1)
+z1a <- z1/100+1
+z2 <- sample(seq(1.5,6.5, by=1), 1)
+z2a <- z2/100+1
+
+e1 <- k/2*z1a^j
+e2 <- k/2*z2a^j
+
+## QUESTION/ANSWER GENERATION
+jP <- log(e2/e1)/log(z2a/z1a)
+k1P <- e1/z1a^j
+kP <- k1P*2
+
+@
+
+
+
+\begin{question}
+
+Ein Kapital x wird in zwei gleich große Hälften geteilt und beide Hälften werden für einen identischen Zeitraum einmal zu \Sexpr{z1}\% und einmal zu \Sexpr{z2}\% angelegt. Nach Ablauf der Zeit werden \Sexpr{round(e1,2)} € und \Sexpr{round(e2,2)} € ausgezahlt. Wie hoch war der Anfangsbetrag?
+
+\end{question}
+
+
+\begin{solution}
+
+Für die beide Anlagen muss gelten:
+
+\begin{align*}
+  \Sexpr{round(e1,2)} &= \frac{K_0}{2} \cdot \Sexpr{z1a}^n \\
+	\Sexpr{round(e2,2)} &= \frac{K_0}{2} \cdot \Sexpr{z2a}^n
+\end{align*}
+
+Beide Gleichungen lassen sich nach $\frac{K_0}{2}$ auflösen und dann gleichsetzen. Damit erhalten wir:
+
+\begin{align*}
+  && \frac{\Sexpr{round(e1,2)}}{\Sexpr{z1a}^n} &= \frac{\Sexpr{round(e2,2)}}{\Sexpr{z2a}^n} | \cdot \Sexpr{z2a}^n : \Sexpr{round(e1,2)}\\[6pt]
+	&\Leftrightarrow& \frac{\Sexpr{z2a}^n}{\Sexpr{z1a}^n} &= \frac{\Sexpr{round(e2,2)}}{\Sexpr{round(e1,2)}} \\[6pt]
+	&\Leftrightarrow& \left(\frac{\Sexpr{z2a}}{\Sexpr{z1a}}\right)^n &= \frac{\Sexpr{round(e2,2)}}{\Sexpr{round(e1,2)}} | log() \\[6pt]
+	&\Leftrightarrow& \log\left(\left(\frac{\Sexpr{z2a}}{\Sexpr{z1a}}\right)^n\right) &= \log\left(\frac{\Sexpr{round(e2,2)}}{\Sexpr{round(e1,2)}}\right) \\[6pt]
+	&\Leftrightarrow& n \cdot \log\left(\frac{\Sexpr{z2a}}{\Sexpr{z1a}}\right) &= \log\left(\frac{\Sexpr{round(e2,2)}}{\Sexpr{round(e1,2)}}\right) | : \log\left(\frac{\Sexpr{z2a}}{\Sexpr{z1a}}\right)\\[6pt]
+	&\Leftrightarrow& n &= \frac{\log(\frac{\Sexpr{round(e2,2)}}{\Sexpr{round(e1,2)}})}{\log(\frac{\Sexpr{z2a}}{\Sexpr{z1a}})} \\[6pt]
+	&\Leftrightarrow& n &= \Sexpr{round(jP,2)}
+\end{align*}
+
+Da wir jetzt wissen, dass \Sexpr{j} Jahre angelegt wurde, können wir auch $\frac{K_0}{2}$ bestimmen:
+
+\[ \frac{K_0}{2} = \Sexpr{round(e1,2)} : \Sexpr{z1a}^\Sexpr{round(jP,2)} = \Sexpr{round(k1P,2)} \]
+
+Somit betrug das Kapital $K_0$ bzw. x = \Sexpr{round(kP,2)} €.
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(kP,2)}}
+%% \exname{Rente - Anfangswert bei zwei Anlagen}
+%% \extol{0.5}
+

@@ -1,0 +1,89 @@
+<<echo=FALSE, results=hide>>=
+## auxiliary function for display of matrices
+toLatex.matrix <- function(object, olat = FALSE, ...)
+{
+  ## workaround for OLAT's mis-layouting of matrices
+  olat <- if(is.null(olat)) FALSE else !identical(olat, FALSE)
+  collapse <- if(olat) " & \\\\phantom{.} & " else " & "
+  nc <- if(olat) ncol(object) * 2 - 1 else ncol(object)
+  
+  ## collapse matrix to LaTeX code lines
+  tmp <- apply(object, 1, paste, collapse = collapse)
+  tmp <- paste(tmp, collapse = " \\\\\\\\ ")
+  tmp <- paste("\\\\left( \\\\begin{array}{",
+    paste(rep("r", nc), collapse = ""), "} ",
+    tmp,
+    " \\\\end{array} \\\\right)", sep = "")
+  return(tmp)
+}
+@
+
+
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+#Bestellung / Verkauf
+V <- matrix(sample(seq(150,420,by=10), 3, replace = FALSE), ncol=1)
+
+
+#Kosten pro Stunde
+K <- matrix(sample(seq(90,300,by=15), 2, replace = FALSE), nrow = 1)
+if(K[1]==K[2]) K[1] <- K[1]-1
+
+#Bedarf an Rohstoffen
+B1 <- matrix(sample(1:9, 2, replace = FALSE), ncol = 1)
+B2 <- matrix(sample(1:9, 2, replace = FALSE), ncol = 1)
+B3 <- matrix(sample(1:9, 2, replace = FALSE), ncol = 1)
+if (B1[1]==B2[1] & B2[1]==B3[1] & B1[2]==B2[2] & B2[2]==B3[2] & B1[3]==B2[3] & B2[3]==B3[3]) {
+  B1[2] <- B1[2]+1
+  B3[3] <- B3[3]+1
+}
+B <- cbind(B1, B2, B3)
+
+#Produktionskosten
+Pk <- 1/60 * K %*% B
+
+#gesamte Produktionskosten
+gPk <- Pk %*% V
+
+
+@
+
+
+\begin{question}
+
+Die drei Endprodukte E1, E2 und E3 werden auf den zwei Maschinen M1 und M2 hergestellt. Die notwendigen Maschinenlaufzeiten pro Minute pro Produkt sind wie folgt: M1/E1: $\Sexpr{B[1,1]}$, M1/E2: $\Sexpr{B[1,2]}$, M1/E3: $\Sexpr{B[1,3]}$, M2/E1: $\Sexpr{B[2,1]}$, M2/E2: $\Sexpr{B[2,2]}$, M2/E3: $\Sexpr{B[2,3]}$. M1 hat dabei $\Sexpr{K[1,1]}$ Kosten pro Stunde und M2 $\Sexpr{K[1,2]}$ Kosten pro Stunde. Ein Kunde bestellt $\Sexpr{V[1,1]}$ E1, $\Sexpr{V[2,1]}$ E2 und $\Sexpr{V[3,1]}$ E3. Wie hoch sind die gesamten Produktionskosten?
+
+\end{question}
+
+
+\begin{solution}
+Aus den Informationen kann folgende Tabelle erstellt werden:
+
+\begin{center}
+\begin{tabular}{|c|ccc|c|}
+\hline
+& E1 & E2 & E3 & Kosten/Stunde \\
+\hline
+M1 & $\Sexpr{B[1,1]}$ & $\Sexpr{B[1,2]}$ & $\Sexpr{B[1,3]}$ & $\Sexpr{K[1,1]}$ \\
+M1 & $\Sexpr{B[2,1]}$ & $\Sexpr{B[2,2]}$ & $\Sexpr{B[2,3]}$ & $\Sexpr{K[1,2]}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Bei der Berechnung der Produktionskosten muss beachtet werden, dass die Kosten pro Minute angeben werden müssen, um sie sinnvoll mit der Maschinenlaufzeit zu multiplizieren. Daraus ergibt sich folgende Rechnung:
+
+\begin{eqnarray*}
+\frac{1}{60} \cdot \Sexpr{toLatex(K)} \cdot \Sexpr{toLatex(B)} = \Sexpr{toLatex(Pk)}
+\end{eqnarray*}
+
+Mithilfe der Bestellmenge können abschließend die gesamten Produktionskosten berechnet werden:
+
+\begin{eqnarray*}
+\Sexpr{toLatex(Pk)} \cdot \Sexpr{toLatex(V)} = \Sexpr{toLatex(gPk)}
+\end{eqnarray*}
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{num}
+%% \exsolution{\Sexpr{gPk}}

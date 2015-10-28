@@ -1,0 +1,96 @@
+<<echo=FALSE, results=hide>>=
+## auxiliary function for display of matrices
+toLatex.matrix <- function(object, olat = FALSE, ...)
+{
+  ## workaround for OLAT's mis-layouting of matrices
+  olat <- if(is.null(olat)) FALSE else !identical(olat, FALSE)
+  collapse <- if(olat) " & \\\\phantom{.} & " else " & "
+  nc <- if(olat) ncol(object) * 2 - 1 else ncol(object)
+  
+  ## collapse matrix to LaTeX code lines
+  tmp <- apply(object, 1, paste, collapse = collapse)
+  tmp <- paste(tmp, collapse = " \\\\\\\\ ")
+  tmp <- paste("\\\\left( \\\\begin{array}{",
+    paste(rep("r", nc), collapse = ""), "} ",
+    tmp,
+    " \\\\end{array} \\\\right)", sep = "")
+  return(tmp)
+}
+@
+
+
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+# Zeilen- bzw. Spaltenanzahl
+n <- sample(3:4, 1)
+
+# Anzahl der Elemente einer nxn-Matrix, die in und unterhalb ihrer Diagonale stehen
+m <- n*(n+1)/2
+
+# Untere Dreiecksmatrix mit positiven Eintraegen in der Diagonale
+L <- matrix(data = 0, nrow = n, ncol = n)
+diag(L) <- sample(1:5, n, replace = TRUE)
+L[lower.tri(L)] <- sample(-7:7, m-n, replace = TRUE)
+
+# Matrix A
+A <- L %*% t(L)
+
+# Vektor x
+x <- matrix(sample(-9:9, n, replace = TRUE), n, 1)
+y <- t(L) %*% x 
+b <- L %*% y
+
+text.x <- paste("\\\\left(\\\\begin{array}{c}",
+  paste("x_{", 1:n, "}", collapse = " \\\\\\\\\ "),
+  "\\\\end{array} \\\\right)")
+
+addsign <- function(x) if(x < 0) paste("", x) else paste("+", x)
+
+elim.paste <- if(n==3) paste(A[1,1], "x_1", addsign(A[1,2]), "x_2", addsign(A[1,3]), "x_3 &=&", b[1], " \\\\\\\\\
+", A[2,1], "x_1", addsign(A[2,2]), "x_2", addsign(A[2,3]), "x_3 &=& ", b[2], " \\\\\\\\\
+", A[3,1], "x_1", addsign(A[3,2]), "x_2", addsign(A[3,3]), "x_3 &=&",  b[3]) else 
+paste(A[1,1], "x_1", addsign(A[1,2]), "x_2", addsign(A[1,3]), "x_3", addsign(A[1,4]), "x_4 &=&", b[1], " \\\\\\\\\
+", A[2,1], "x_1", addsign(A[2,2]), "x_2", addsign(A[2,3]), "x_3", addsign(A[2,4]), "x_4 &=&", b[2], " \\\\\\\\\
+", A[3,1], "x_1", addsign(A[3,2]), "x_2", addsign(A[3,3]), "x_3", addsign(A[3,4]), "x_4 &=&", b[3], " \\\\\\\\\
+", A[4,1], "x_1", addsign(A[4,2]), "x_2", addsign(A[4,3]), "x_3", addsign(A[4,4]), "x_4 &=&", b[4])
+
+k <- if(n==3) {
+  sprintf("x1: %d, x2: %d, x3: %d",x[1],x[2],x[3])
+} else {
+  sprintf("x1: %d, x2: %d, x3: %d, x3: %d",x[1],x[2],x[3],x[4])
+}
+
+@
+
+
+\begin{question}
+
+Benutzen Sie die Formel $A \cdot x = b$ und lösen Sie das lineare Gleichungssystem unter Verwendung folgender Werte:
+
+\begin{eqnarray*}
+b = \Sexpr{toLatex(b)}, A = \Sexpr{toLatex(A)}
+\end{eqnarray*}
+
+Welchen Wert haben $x_1$ bis $x_{\Sexpr{n}}$?
+
+\end{question}
+
+
+\begin{solution}
+
+Die Informationen werden in das Gleichungssystem eingesetzt und anschließend mit dem Eliminationsverfahren (z. B.: Durch Substitution) aufgelöst:
+
+\begin{eqnarray*}
+\Sexpr{toLatex(A)} \cdot \Sexpr{text.x} = \Sexpr{toLatex(b)}
+\end{eqnarray*}
+\begin{eqnarray*}
+\Sexpr{elim.paste}
+\end{eqnarray*}
+
+Wir erhalten den Lösungsvektor $x = \Sexpr{toLatex(x)}$.
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{string}
+%% \exsolution{\Sexpr{k}}

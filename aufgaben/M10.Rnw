@@ -1,0 +1,114 @@
+<<echo=FALSE, results=hide>>=
+## auxiliary function for display of matrices
+toLatex.matrix <- function(object, olat = FALSE, ...)
+{
+  ## workaround for OLAT's mis-layouting of matrices
+  olat <- if(is.null(olat)) FALSE else !identical(olat, FALSE)
+  collapse <- if(olat) " & \\\\phantom{.} & " else " & "
+  nc <- if(olat) ncol(object) * 2 - 1 else ncol(object)
+  
+  ## collapse matrix to LaTeX code lines
+  tmp <- apply(object, 1, paste, collapse = collapse)
+  tmp <- paste(tmp, collapse = " \\\\\\\\ ")
+  tmp <- paste("\\\\left( \\\\begin{array}{",
+    paste(rep("r", nc), collapse = ""), "} ",
+    tmp,
+    " \\\\end{array} \\\\right)", sep = "")
+  return(tmp)
+}
+@
+
+
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+#Bestellung / Verkauf
+V <- matrix(sample(seq(100,500,by=100), 2, replace = FALSE), ncol=1)
+
+ok <- FALSE
+while(!ok) {
+
+#Preise in den Produktionsgebieten
+P1 <- matrix(sample(2:9, 3, replace = FALSE), nrow = 1)
+P2 <- matrix(sample(2:9, 3, replace = FALSE), nrow = 1)
+if(P1[1]==P2[1]) P1[1] <- P1[1]-1
+if(P1[2]==P2[2]) P2[2] <- P2[2]-1
+if(P1[3]==P2[3]) P1[3] <- P1[3]-1
+
+#Bedarf an Rohstoffen
+B1 <- matrix(sample(1:6, 3, replace = FALSE), ncol = 1)
+B2 <- matrix(sample(1:6, 3, replace = FALSE), ncol = 1)
+if (B1[1]==B2[1] & B1[2]==B2[2] & B1[3]==B2[3]) B1[2] <- B1[2]+1
+B <- cbind(B1, B2)
+
+#Produktionskosten
+Pk1 <- P1%*%B
+Pk2 <- P2%*%B
+
+#gesamte Produktionskosten
+gPk1 <- Pk1 %*% V
+gPk2 <- Pk2 %*% V
+gPk <- cbind(gPk1,gPk2)
+ok <- gPk1 < gPk2
+} 
+
+#Differenz
+Diff <- gPk2 - gPk1
+
+@
+
+
+\begin{question}
+
+In den Produktionsgebieten P1 und P2 Werden die Endprodukte E1 und E2 hergestellt. Die Produkte werden aus den Rohstoffen R1, R2 und R3 gefertigt. E1 benötigt  $\Sexpr{B[1,1]}$ R1, $\Sexpr{B[2,1]}$ R2 und $\Sexpr{B[3,1]}$ R3. E2 benötigt $\Sexpr{B[1,2]}$ R1, $\Sexpr{B[2,2]}$ R2 und $\Sexpr{B[3,2]}$ R3. In P1 liegen die Produktionspreise bei $\Sexpr{P1[1]}$ für R1, $\Sexpr{P1[2]}$ für R2 und $\Sexpr{P1[3]}$ für R3. In P2 liegen die Produktionspreise bei $\Sexpr{P2[1]}$ für R1, $\Sexpr{P2[2]}$ für R2 und $\Sexpr{P2[3]}$ für R3. Ein Kunde bestellt $\Sexpr{V[1]}$ E1 und $\Sexpr{V[2]}$ E2. Berechnen Sie die Produktionskosten für die Standorte P1 und P2. Wie groß ist die Differenz der Produktionskosten?
+
+\end{question}
+
+
+\begin{solution}
+
+Aus den Informationen kann folgende Tabelle erstellt werden:
+
+\begin{center}
+\begin{tabular}{|l|rr|rr|}
+\hline
+& \multicolumn{2}{c|}{Bedarf} & \multicolumn{2}{c|}{Preise} \\
+& E1 & E2 & P1 & P2 \\
+\hline
+R1 & $\Sexpr{B[1,1]}$ & $\Sexpr{B[1,2]}$ & $\Sexpr{P1[1]}$ & $\Sexpr{P2[1]}$ \\
+R2 & $\Sexpr{B[2,1]}$ & $\Sexpr{B[2,2]}$ & $\Sexpr{P1[2]}$ & $\Sexpr{P2[2]}$ \\
+R3 & $\Sexpr{B[3,1]}$ & $\Sexpr{B[3,2]}$ & $\Sexpr{P1[3]}$ & $\Sexpr{P2[3]}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Aus den Angaben in der Tabelle erstellen wir die Bedarfsmatrix, den Preisvektor für P1 und den Preisvektor für P2. Anschließend berechnen wir die Produktionskosten wie folgt:
+
+\begin{eqnarray*}
+\Sexpr{toLatex(P1)} \cdot \Sexpr{toLatex(B)} = \Sexpr{toLatex(Pk1)}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\Sexpr{toLatex(P2)} \cdot \Sexpr{toLatex(B)} = \Sexpr{toLatex(Pk2)}
+\end{eqnarray*}
+
+Mithilfe des Vektors zur Bestellmenge, können wir die gesamten Produktionskosten an dem jeweiligen Produktionsgebiet berechnen:
+
+\begin{eqnarray*}
+\Sexpr{toLatex(Pk1)} \cdot \Sexpr{toLatex(V)} = \Sexpr{toLatex(gPk1)}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\Sexpr{toLatex(Pk2)} \cdot \Sexpr{toLatex(V)} = \Sexpr{toLatex(gPk2)}
+\end{eqnarray*}
+
+Abschließend können wir die Differenz der Produktionskosten der beiden Produktionsgebiete berechnen:
+
+\begin{eqnarray*}
+\Sexpr{toLatex(gPk2)} - \Sexpr{toLatex(gPk1)} = \Sexpr{toLatex(Diff)}
+\end{eqnarray*}
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{num}
+%% \exsolution{\Sexpr{Diff}}

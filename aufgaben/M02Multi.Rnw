@@ -1,0 +1,78 @@
+<<echo=FALSE, results=hide>>=
+## auxiliary function for display of matrices
+toLatex.matrix <- function(object, olat = FALSE, ...)
+{
+  ## workaround for OLAT's mis-layouting of matrices
+  olat <- if(is.null(olat)) FALSE else !identical(olat, FALSE)
+  collapse <- if(olat) " & \\\\phantom{.} & " else " & "
+  nc <- if(olat) ncol(object) * 2 - 1 else ncol(object)
+  
+  ## collapse matrix to LaTeX code lines
+  tmp <- apply(object, 1, paste, collapse = collapse)
+  tmp <- paste(tmp, collapse = " \\\\\\\\ ")
+  tmp <- paste("\\\\left( \\\\begin{array}{",
+    paste(rep("r", nc), collapse = ""), "} ",
+    tmp,
+    " \\\\end{array} \\\\right)", sep = "")
+  return(tmp)
+}
+@
+
+<<echo=FALSE, results=hide>>=
+## auxiliary function for display of matrices
+erzeugeMatrix2x2 <- function(object)
+{
+  matrix <- matrix(data = sample(0:10, size = 4, replace = TRUE), nrow = 2, ncol = 2)
+  return(matrix)
+}
+@
+
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+
+type <- sample(c("33x32", "23x33"), 1)
+switch(type,
+"33x32" = {
+matrix1a <- matrix(data = sample(0:10, size = 9, replace = TRUE), nrow = 3, ncol = 3)
+matrix1b <- matrix(data = sample(0:10, size = 6, replace = TRUE), nrow = 3, ncol = 2)
+},
+"23x33" = {
+matrix1a <- matrix(data = sample(0:10, size = 6, replace = TRUE), nrow = 2, ncol = 3)
+matrix1b <- matrix(data = sample(0:10, size = 9, replace = TRUE), nrow = 3, ncol = 3)
+},)
+matrix1ab <- matrix1a %*% matrix1b
+
+multi2 <- sample(2:9,1)
+matrix2a <- erzeugeMatrix2x2()
+matrix2b <- matrix(data = sample(0:10, size = 2, replace = TRUE), nrow = 2, ncol = 1)
+matrix2ab <- multi2 * matrix2a %*% matrix2b
+
+pla <- c("Siehe Lösungsteil!")
+@
+
+
+\begin{question}
+
+Führen Sie folgende Rechenoperationen durch:
+
+1. $\Sexpr{toLatex(matrix1a)} * \Sexpr{toLatex(matrix1b)} =$
+
+2. $\Sexpr{multi2} * \Sexpr{toLatex(matrix2a)} * \Sexpr{toLatex(matrix2b)} =$
+
+\end{question}
+
+
+
+
+\begin{solution}
+
+1. $= \Sexpr{toLatex(matrix1ab)}$
+
+2. $= \Sexpr{toLatex(matrix2ab)}$
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{string}
+%% \exsolution{\Sexpr{pla}}
+%% \exname{Matrix Multiplikation}

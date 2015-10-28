@@ -1,0 +1,42 @@
+<<echo=FALSE, results=hide>>=
+
+## DATA GENERATION
+k <- sample(as.integer(seq(30000,150000, by=5000)), 1)
+j <- sample(seq(10,15, by=1), 1)
+z <- sample(seq(2,6, by=1), 1)
+z1 <- z/100+1
+
+## QUESTION/ANSWER GENERATION
+f <- (z1^j-1)/(z1-1)*z1*1/z1^j
+r <- k/f
+
+@
+
+
+
+\begin{question}
+
+Heinz S. hat bis zu seiner Rente mühsam Geld angesammelt. Nun befinden sich \Sexpr{k} € auf seinem Sparkonto. Dieses wird mit \Sexpr{z}\% jährlich verzinst. Welchen Betrag kann sich Heinz \Sexpr{j} Jahre lang maximal zu Beginn jeden Jahres auszahlen lassen?
+
+\end{question}
+
+
+\begin{solution}
+
+\begin{align*}
+  && \Sexpr{k} &= \underbrace{R \cdot \frac{\Sexpr{z1}^{\Sexpr{j}} - 1}{\Sexpr{z1} - 1} \cdot \Sexpr{z1}}_{\text{vorschüssige Rente}} \cdot \underbrace{\frac{1}{\Sexpr{z1}^{\Sexpr{j}}}}_{\text{abzinsen}}\\
+	&\Leftrightarrow& \Sexpr{k} &= R \cdot \Sexpr{round(f,3)} \\
+	&\Leftrightarrow& R &= \Sexpr{round(r,2)}
+\end{align*}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(r,2)}}
+%% \exname{Rentenrechnung - maximale vorschüssige Rente}
+%% \extol{0.5}
+

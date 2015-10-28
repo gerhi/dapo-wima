@@ -1,0 +1,41 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+k <- sample(seq (2000,3000, by=100), 1)
+
+z <- sample(seq(1,2, by=0.1), 1)
+z1 <- z/100
+z2 <- z1+1
+
+## QUESTION/ANSWER GENERATION
+rNach <- k/((z2^18-1)/(z2-1))
+r <- rNach/(12+(z1*13)/2)
+
+@
+
+
+
+\begin{question}
+
+Opa zahlt seinem Enkel Paul ab Geburt monatlich zum ersten des Monats Geld auf ein Konto ein. Das Konto wird mit \Sexpr{z}\% verzinst. Welchen Betrag muss Opa einzahlen, wenn der Enkel an seinem achtzehnten Geburtstag \Sexpr{k} € für seinen Führerschein zur Verfügung haben soll, jährliche Verzinsung vorausgesetzt.
+
+\end{question}
+
+
+\begin{solution}
+
+\begin{itemize}
+  \item $R_{18}^{nach} = \Sexpr{k} = R_k \cdot \frac{\Sexpr{z2}^{18} - 1}{\Sexpr{z2} - 1} \Rightarrow R_k = \Sexpr{round(rNach,2)}$
+	\item $\Sexpr{round(rNach,2)} = R \cdot (12 + \frac{\Sexpr{z1} \cdot 13}{2}) \Rightarrow R = \Sexpr{round(r,2)}$
+\end{itemize}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(r,2)}}
+%% \exname{Rente für definierten Endwert}
+%% \extol{0.5}
+

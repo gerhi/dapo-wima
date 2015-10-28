@@ -1,0 +1,64 @@
+<<echo=FALSE, results=hide>>=
+
+## DATA GENERATION
+j <- sample(10:20,1)
+a <- sample(seq (1000,10000, by=1000), 1)
+
+z1 <- sample(seq (1,5, by=2), 1)
+z1a <- z1/100
+z1b <- z1a+1
+
+z2 <- sample(seq (2,6, by=2), 1)
+z2a <- z2/100
+z2b <- z2a+1
+
+## QUESTION/ANSWER GENERATION
+z1Ja <- a*((z1b^j-1)/z1a)*z1b*1/z1b^j
+z1Je <- a*((z1b^j-1)/z1a)*1/z1b^j
+z2Ja <- a*((z2b^j-1)/z2a)*z2b*1/z2b^j
+z2Je <- a*((z2b^j-1)/z2a)*1/z2b^j
+zusatzString <- paste("Es wird abgezinst, nicht aufgezinst!")
+
+@
+
+
+
+\begin{question}
+
+Welcher Anfangswert entspricht einer \Sexpr{j} Jahre gezahlten Rente in Höhe von \Sexpr{a} € gezahlt jeweils:
+
+\begin{answerlist}
+\item am Jahresanfang bei einem Zinssatz von \Sexpr{z1}\%? 
+\item am Jahresende bei einem Zinssatz von \Sexpr{z1}\%?
+\item am Jahresanfang bei einem Zinssatz von \Sexpr{z2}\%?
+\item am Jahresende bei einem Zinssatz von \Sexpr{z2}\%?
+\item Warum ist der Wert bei einem geringeren Zinssatz höher?
+\end{answerlist}
+
+\end{question}
+
+
+
+\begin{solution}
+
+\begin{answerlist}
+  \item Jahresanfang, d.h. vorschüssig, \Sexpr{z1}\%: $R_0 = \Sexpr{a} \cdot \frac{\Sexpr{z1b}^{\Sexpr{j}} - 1}{\Sexpr{z1a}} \cdot \Sexpr{z1b} \cdot \frac{1}{\Sexpr{z1b}^{\Sexpr{j}}} = \Sexpr{round(z1Ja,2)}$
+	\item Jahresende, d.h. nachschüssig, \Sexpr{z1}\%: $R_0 = \Sexpr{a} \cdot \frac{\Sexpr{z1b}^{\Sexpr{j}} - 1}{\Sexpr{z1a}} \cdot \frac{1}{\Sexpr{z1b}^{\Sexpr{j}}} = \Sexpr{round(z1Je,2)}$
+	\item Jahresanfang, d.h. vorschüssig, \Sexpr{z2}\%: $R_0 = \Sexpr{a} \cdot \frac{\Sexpr{z2b}^{\Sexpr{j}} - 1}{\Sexpr{z2a}} \cdot \Sexpr{z2b} \cdot \frac{1}{\Sexpr{z2b}^{\Sexpr{j}}} = \Sexpr{round(z2Ja,2)}$
+	\item Jahresende, d.h. nachschüssig, \Sexpr{z2}\%: $R_0 = \Sexpr{a} \cdot \frac{\Sexpr{z2b}^{\Sexpr{j}} - 1}{\Sexpr{z2a}} \cdot \frac{1}{\Sexpr{z2b}^{\Sexpr{j}}} = \Sexpr{round(z2Je,2)}$
+  \item Der höhere Wert erklärt sich dadurch, dass \emph{abgezinst} wird, nicht aufgezinst.
+\end{answerlist}
+
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{cloze}
+%% \exsolution{\Sexpr{round(z1Ja,2)}|\Sexpr{round(z1Je,2)}|\Sexpr{round(z2Ja,2)}|\Sexpr{round(z2Je,2)}|\Sexpr{zusatzString}}
+%% \exclozetype{num|num|num|num|string}
+%% \exname{Rente Anfangswert}
+%% \extol{0.5}
+

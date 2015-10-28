@@ -1,0 +1,47 @@
+<<echo=FALSE, results=hide>>=
+
+## DATA GENERATION
+k <- sample(as.integer(seq(40000,150000, by=5000)), 1)
+z <- sample(seq (1.5,6.9, by=0.1), 1)
+z1<- z/100+1
+
+## QUESTION/ANSWER GENERATION
+rNach <- k*(z1-1)/1
+rVor <- k*(z1-1)/z1
+
+@
+
+
+
+\begin{question}
+
+Oma Elsbeth hat derzeit \Sexpr{k} € auf ihrem Sparkonto. 
+
+\begin{answerlist}
+  \item Welchen Betrag kann sie sich bei einem Zinsatz von \Sexpr{z}\% als nachschüssige Rente auszahlen lassen, wenn sie davon ausgeht, dass sie ewig lebt. 
+	\item Welchen Betrag kann sie sich vorschüssig auszahlen lassen?
+\end{answerlist}
+
+\end{question}
+
+
+
+\begin{solution}
+
+\begin{answerlist}
+  \item $R_0^{nach} = R \cdot \frac{1}{q-1} \Rightarrow \Sexpr{k} = R \cdot \frac{1}{\Sexpr{z1} - 1} \Rightarrow R = \Sexpr{k} \cdot \frac{\Sexpr{z1} -1}{1} = \Sexpr{round(rNach,2)}$
+  \item $R_0^{vor} = R \cdot \frac{q}{q-1} \Rightarrow \Sexpr{k} = R \cdot \frac{\Sexpr{z1}}{\Sexpr{z1} - 1} \Rightarrow R = \Sexpr{k} \cdot \frac{\Sexpr{z1} - 1}{\Sexpr{z1}} = \Sexpr{round(rVor,2)}$
+\end{answerlist}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{cloze}
+%% \exsolution{\Sexpr{round(rNach,2)}|\Sexpr{round(rVor,2)}}
+%% \exclozetype{num|num}
+%% \exname{Rentenrechnung - lebenslange Rente}
+%% \extol{0.5}
+

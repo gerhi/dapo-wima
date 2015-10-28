@@ -1,0 +1,34 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+
+
+## QUESTION/ANSWER GENERATION
+a <- paste("Nur bei kurzer Lebensdauer Auszahlung sinnvoller.")
+
+@
+
+
+
+\begin{question}
+
+Hat man bei einem Gewinn die Möglichkeit, eine ewige Rente zu wählen oder sich den Gewinn sofort auszahlen zu lassen und wählt die Auszahlung, so könnte man dies auch als eine Wette gegen die eigene Gesundheit ansehen. Warum?
+
+\end{question}
+
+
+
+\begin{solution}
+
+Weil bei einer sehr langen Lebensdauer der Wert der ewigen Rente irgendwann den Wert der Auszahlung überschreiten würde. Geht man jedoch von einer "'relativ"' kurzen Lebensdauer aus, ist es sinnvoller, sich den Gewinn auszahlen zu lassen. Leicht zu erkennen ist dies am Vergleich des ewigen Lebens mit dem morgigen ableben.
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{string}
+%% \exsolution{\Sexpr{a}}
+%% \exname{Rentenrechnung - ewige Rente vs. Auszahlung}
+%% \extol{0.5}
+

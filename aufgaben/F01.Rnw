@@ -1,0 +1,38 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+
+a0 <- sample(seq(100,1000, by=50),1)
+a1 <- sample(seq(5,25, by=5),1)
+
+a0b <- a0/a1
+a1b <- 1/a1
+
+a <- sprintf("p = %.3f - %.3f * x",a0b, a1b)
+@
+
+
+\begin{question}
+
+\"Uberf\"uhren Sie die Nachfragefunktion im Format $x_n(p_n)$ ins Format $p_n(x_n)$
+
+\begin{itemize}
+\item $x_n(p_n) = \Sexpr{a0} - \Sexpr{a1}p$
+\end{itemize}
+
+\end{question}
+
+\begin{solution}
+
+\begin{align*}
+  && x &= \Sexpr{a0} - \Sexpr{a1}p | -\Sexpr{a0}\\
+  &\Leftrightarrow& x - \Sexpr{a0} &= - \Sexpr{a1}p | : -\Sexpr{a1} \\
+   &\Leftrightarrow& -\frac{1}{\Sexpr{a1}}x + \Sexpr{round(a0b,3)} &= p 
+\end{align*}
+
+Nach Umstellung lautet das Ergebnis $p_n(x_n) = \Sexpr{round(a0b,3)} - \Sexpr{round(a1b,3)}x$
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{string}
+%% \exsolution{\Sexpr{a}}

@@ -1,0 +1,45 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+a <- sample(c(20,25,30,40,50,100), 1)
+
+g <- sample(c(18,20,21,25), 1)
+
+z <- sample(seq(1,2, by=0.1), 1)
+z1 <- z/100
+z2 <- z1+1
+
+## QUESTION/ANSWER GENERATION
+r <- a*(12+(z1*13)/2)
+rNach <- r*(z2^g-1)/(z2-1)
+
+
+@
+
+
+
+\begin{question}
+
+Opa zahlt seinem Enkel Paul ab Geburt monatlich zum ersten des Monats \Sexpr{a} € auf ein Konto ein. Das Konto wird mit \Sexpr{z}\% verzinst. Welchen Betrag wird der Enkel an seinem \Sexpr{g}. Geburtstag zur Verfügung haben, jährliche Verzinsung vorausgesetzt.
+
+\end{question}
+
+
+
+\begin{solution}
+
+\begin{itemize}
+  \item Jahresäquivalent: $R_k = \Sexpr{a} \cdot (12 + \frac{\Sexpr{z1} \cdot 13}{2}) = \Sexpr{round(r,2)}$
+	\item Endwert der Rente: $R_n^{nach} = \Sexpr{round(r,2)} \cdot \frac{\Sexpr{z2}^{\Sexpr{g}} - 1}{\Sexpr{z2} - 1} = \Sexpr{round(rNach,2)}$
+\end{itemize}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(rNach,2)}}
+%% \exname{Rente Endwert}
+%% \extol{0.5}
+

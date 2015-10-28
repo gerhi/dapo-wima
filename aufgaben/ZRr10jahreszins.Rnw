@@ -1,0 +1,41 @@
+<<echo=FALSE, results=hide>>=
+
+## DATA GENERATION
+a <- sample(seq(10000,90000, by=5000), 1)
+k <- a + sample(seq(30,200, by=10), 1)
+t <- sample(seq(30,90, by=1), 1)
+
+## QUESTION/ANSWER GENERATION
+z <- (k/a-1)*365/t
+zEnd <- z*100
+
+@
+
+
+
+\begin{question}
+
+Bei welchem Jahreszins wächst ein Betrag von \Sexpr{a} € bei einfacher Verzinsung in \Sexpr{t} Tagen auf \Sexpr{k} € (act/365)?
+
+\end{question}
+
+
+\begin{solution}
+
+\begin{align*}
+  && \Sexpr{k} &= \Sexpr{a} \cdot \left(1 + \frac{p}{100} \cdot \frac{\Sexpr{t}}{365}\right) \\
+	&\Leftrightarrow & \left(\frac{\Sexpr{k}}{\Sexpr{a}} - 1\right) \cdot \frac{365}{\Sexpr{t}} &= p\% \\
+	& \Leftrightarrow & p &\approx \Sexpr{round(zEnd,2)}
+\end{align*}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(zEnd,2)}}
+%% \exname{Zinsen - Jahreszins bei jährlicher Verzinsung}
+%% \extol{0.5}
+

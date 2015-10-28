@@ -1,0 +1,68 @@
+<<echo=FALSE, results=hide>>=
+
+## DATA GENERATION
+k <- sample(as.integer(seq(25000,100000, by=5000)), 1)
+kd <- k*2
+z <- sample(seq (1.5,4, by=0.5), 1)
+z1 <- z/100+1
+j <- sample(seq (8,11, by=1), 1)
+
+## QUESTION/ANSWER GENERATION
+r <- k*z1^j
+l <- kd-r
+vr <- (z1^j-1)/(z1-1)*z1
+vorr <- l/vr
+
+vr2 <- (z1^j-1)/(z1-1)
+vorr2 <- l/vr2
+
+zusatzString <- paste("Zahlungen werden ein Jahr weniger verzinst.")
+@
+
+
+
+\begin{question}
+
+Sie haben derzeit auf einem mit \Sexpr{z}\% jährlich verzinsten Konto \Sexpr{k} € angespart. 
+
+\begin{answerlist}
+  \item Welchen gleichbleibenden Betrag müssen Sie jährlich zu Beginn des Jahres zusätzlich einzahlen, damit sich das Kapital am Ende des \Sexpr{j}. Jahres verdoppelt hat?
+	\item Wie ändert sich der Betrag, wenn Sie jeweils zum Jahresende einzahlen?
+	\item Warum ist der zweite Betrag höher als der erste?
+\end{answerlist}
+
+\end{question}
+
+
+\begin{solution}
+
+\begin{answerlist}
+  \item Zahlung zum Jahresanfang: \\
+	
+  Das derzeitige Guthaben hat sich nach \Sexpr{j} Jahren auf $\Sexpr{k} \cdot \Sexpr{z1}^{\Sexpr{j}} = \Sexpr{round(r,2)}$ erhöht. \\
+  
+  Damit gilt es eine Lücke in Höhe von $\Sexpr{kd} - \Sexpr{round(r,2)} = \Sexpr{round(l,2)}$ zu schließen. \\
+  
+	Dieser Betrag ist nun der Endwert einer jährlichen, vorschüssigen Zeitrente mit einer Laufzeit von \Sexpr{j} Jahren: $\Sexpr{round(l,2)} = R \cdot \frac{\Sexpr{z1}^{\Sexpr{j}} - 1}{\Sexpr{z1} - 1} \cdot \Sexpr{z1} = R \cdot \Sexpr{round(vr,2)} \Rightarrow R = \Sexpr{round(vorr,2)}$.
+		
+	\item Zahlung zum Jahresende: \\
+	
+		Lücke weiterhin \Sexpr{round(l,2)} \\
+    
+		Zahlung nun nachschüssig, also: $\Sexpr{round(l,2)} = R \cdot \frac{\Sexpr{z1}^{\Sexpr{j}} - 1}{\Sexpr{z1} - 1} = R \cdot \Sexpr{round(vr2,2)} \Rightarrow R = \Sexpr{round(vorr2,2)}$
+		
+	\item Weil alle Zahlungen ein Jahr weniger verzinst werden.
+\end{answerlist}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{cloze}
+%% \exsolution{\Sexpr{round(vorr,2)}|\Sexpr{round(vorr2,2)}|\Sexpr{zusatzString}}
+%% \exclozetype{num|num|string}
+%% \exname{Rentenrechnung - vorschüssige vs. nachschüssige Rentenzahlung}
+%% \extol{0.5}
+

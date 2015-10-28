@@ -1,0 +1,111 @@
+<<echo=FALSE, results=hide>>=
+## auxiliary function for display of matrices
+toLatex.matrix <- function(object, olat = FALSE, ...)
+{
+  ## workaround for OLAT's mis-layouting of matrices
+  olat <- if(is.null(olat)) FALSE else !identical(olat, FALSE)
+  collapse <- if(olat) " & \\\\phantom{.} & " else " & "
+  nc <- if(olat) ncol(object) * 2 - 1 else ncol(object)
+  
+  ## collapse matrix to LaTeX code lines
+  tmp <- apply(object, 1, paste, collapse = collapse)
+  tmp <- paste(tmp, collapse = " \\\\\\\\ ")
+  tmp <- paste("\\\\left( \\\\begin{array}{",
+    paste(rep("r", nc), collapse = ""), "} ",
+    tmp,
+    " \\\\end{array} \\\\right)", sep = "")
+  return(tmp)
+}
+@
+
+
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+#Zwischenprodukte
+Z <- matrix(sample(1:50, 6, replace = FALSE), nrow = 2)
+
+#Rohstoffe
+R <- matrix(sample(1:50, 4, replace = FALSE), nrow = 2)
+
+#Bestellung
+B <- matrix(sample(3:50, 3, replace = FALSE), ncol = 1)
+
+#Bedarf an Z
+bZ <- Z %*% B
+
+b1Help <- round((bZ[1]*0.5), 0)
+b1 <- sample(b1Help:(bZ[1]-1), 1)
+b2Help <- round((bZ[2]*0.5), 0)
+b2 <- sample(b2Help:(bZ[2]-1), 1)
+b <- matrix(c(b1, b2), ncol = 1)
+bL <- toLatex(b)
+
+l <- R %*% b
+lL <- toLatex(l)
+
+Dif <- bZ - b
+DifL <- toLatex(Dif)
+
+a <- sprintf("max. Z1: %d, Z2: %d; Kauf Z1: %d. Z2: %d", bZ[1,1], bZ[2,1], Dif[1,1], Dif[2,1])
+@
+
+
+\begin{question}
+
+Die drei Endprodukte E1, E2 und E3 werden aus den folgenden Mengen zweier Zwischenprodukte Z1 und Z2 gefertigt:
+
+\begin{center}
+\begin{tabular}{|c|ccc|}
+\hline
+ & E1 & E2 & E3 \\
+\hline
+Z1 & $\Sexpr{Z[1,1]}$ & $\Sexpr{Z[1,2]}$ & $\Sexpr{Z[1,3]}$ \\
+Z2 & $\Sexpr{Z[2,1]}$ & $\Sexpr{Z[2,2]}$ & $\Sexpr{Z[2,3]}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Die Zwischenprodukte Z1 und Z2 werden wiederum aus den Mengen folgender Rohstoffe R1 und R2 gefertigt:
+
+\begin{center}
+\begin{tabular}{|c|ccc|}
+\hline
+ & Z1 & Z2 & Lager \\
+\hline
+R1 & $\Sexpr{R[1,1]}$ & $\Sexpr{R[1,2]}$ & $\Sexpr{l[1,1]}$ \\
+R2 & $\Sexpr{R[2,1]}$ & $\Sexpr{R[2,2]}$ & $\Sexpr{l[2,1]}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Ein Kunde bestellt $\Sexpr{B[1,1]}$ E1, $\Sexpr{B[2,1]}$ E2 und $\Sexpr{B[3,1]}$ E3. Wie viele Zwischenprodukte Z1 und Z2 müssen Sie herstellen, um die Bestellung zu bedienen? Wie viele Zwischenprodukte müssen Sie ggf. hinzu kaufen?
+
+\end{question}
+
+
+\begin{solution}
+Mit dem Vektor $\Sexpr{toLatex(B)}$  für die Bestellung, errechnen Sie die benötigte Menge an Zwischenprodukten Z1 und Z2:
+
+\begin{eqnarray*}
+\Sexpr{toLatex(Z)} \cdot \Sexpr{toLatex(B)} = \Sexpr{toLatex(bZ)}
+\end{eqnarray*}
+
+Zur Berechnung der maximalen Produktionskapazität, benutzen wir die Formel $A \cdot x = b$ als Lösungsstruktur linearer Gleichungssysteme. In das Gleichungssystem setzen wir den Lagerbestand und die Mengenangaben zu den benötigten Zwischenprodukten:
+
+\begin{eqnarray*}
+\Sexpr{toLatex(R)} \cdot \left( \begin{array}{ccc} x_1 \\ x_2 \end{array} \right) = \Sexpr{lL}
+\end{eqnarray*}
+
+Die Auflösung des Gleichungssystems ergibt eine maximale produzierbare Menge von Z1 und Z2 von $\Sexpr{bL}$
+
+Durch Subtraktion der beiden Vektoren erhalten wir die Differenz:
+
+\begin{eqnarray*}
+\Sexpr{toLatex(bZ)} - \Sexpr{bL} = \Sexpr{DifL}
+\end{eqnarray*}
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{string}
+%% \exsolution{\Sexpr{a}}

@@ -1,0 +1,95 @@
+<<echo=FALSE, results=hide>>=
+## auxiliary function for display of matrices
+toLatex.matrix <- function(object, olat = FALSE, ...)
+{
+  ## workaround for OLAT's mis-layouting of matrices
+  olat <- if(is.null(olat)) FALSE else !identical(olat, FALSE)
+  collapse <- if(olat) " & \\\\phantom{.} & " else " & "
+  nc <- if(olat) ncol(object) * 2 - 1 else ncol(object)
+  
+  ## collapse matrix to LaTeX code lines
+  tmp <- apply(object, 1, paste, collapse = collapse)
+  tmp <- paste(tmp, collapse = " \\\\\\\\ ")
+  tmp <- paste("\\\\left( \\\\begin{array}{",
+    paste(rep("r", nc), collapse = ""), "} ",
+    tmp,
+    " \\\\end{array} \\\\right)", sep = "")
+  return(tmp)
+}
+@
+
+
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+#Bedarf an Rohstoffen pro Endprodukt definieren
+B1 <- matrix(sample(1:30, 3, replace = FALSE), nrow = 1)
+B2 <- matrix(sample(1:30, 3, replace = FALSE), nrow = 1)
+B3 <- matrix(sample(1:30, 3, replace = FALSE), nrow = 1)
+if(B1[1]==B2[1]) B1[1] <- B1[1]-1
+if(B1[1]==B3[1]) B3[1] <- B3[1]-1
+B <- rbind(B1, B2, B3)
+
+#Outputvektor generieren
+x <- matrix(sample(1:30, 3, replace = FALSE), ncol = 1)
+
+#Lagerbestaende berechnen
+L <- B %*% x
+
+#Fachliche Anforderung festlegen
+i <- sample((1:3), 1)
+E <- x[i]
+ov <- matrix(c("x_1", "x_2", "x_3"), ncol = 1)
+ov[i] <- E
+
+#Darstellung der Matrizen in Latex
+B1 <- toLatex(B)
+L1 <- toLatex(L)
+x1 <- toLatex(x)
+ov1 <- toLatex(ov)
+
+a <- sprintf("E1: %d, E2: %d, E3: %d",x[1,1], x[2,1], x[3,1])
+@
+
+
+\begin{question}
+
+Die drei Endprodukte E1, E2, und E3 werden aus den drei Rohstoffen R1, R2 und R3 gefertigt. Endprodukt E1 benötigt $\Sexpr{B[1,1]}$ R1, $\Sexpr{B[2,1]}$ R2 und $\Sexpr{B[3,1]}$ R3, Endprodukt E2 benötigt $\Sexpr{B[1,2]}$ R1, $\Sexpr{B[2,2]}$ R2 und $\Sexpr{B[3,2]}$ R3 und Endprodukt E3 benötigt $\Sexpr{B[1,3]}$ R1, $\Sexpr{B[2,3]}$ R2 und $\Sexpr{B[3,3]}$ R3. Das Lager enthält $\Sexpr{L[1,1]}$ R1, $\Sexpr{L[2,1]}$ R2 und $\Sexpr{L[3,1]}$ R3. Eine fachliche Anforderung gibt vor, dass von $E\Sexpr{i}$ $\Sexpr{E}$ Stück hergestellt werden müssen. Wie viel kann jeweils von den anderen Endprodukten hergestellt werden?
+
+\end{question}
+
+
+\begin{solution}
+
+Aus den Informationen kann folgende Tabelle erstellt werden:
+
+\begin{center}
+\begin{tabular}{|c|rrr|r|}
+\hline
+& E1 & E2 & E3 & Lager \\
+\hline
+R1 & $\Sexpr{B[1,1]}$ & $\Sexpr{B[1,2]}$ & $\Sexpr{B[1,3]}$ & $\Sexpr{L[1,1]}$ \\
+R2 & $\Sexpr{B[2,1]}$ & $\Sexpr{B[2,2]}$ & $\Sexpr{B[2,3]}$ & $\Sexpr{L[2,1]}$ \\
+R3 & $\Sexpr{B[3,1]}$ & $\Sexpr{B[3,2]}$ & $\Sexpr{B[3,3]}$ & $\Sexpr{L[3,1]}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Um zu dem Ergebnis zu gelangen, benutzen wir die Formel $A \cdot x = b$ als Lösungsstruktur linearer Gleichungssysteme. Zur Lösung können wir folgende Angaben in das Gleichungssystem einsetzen: Die Bedarfsmatrix A, den Outputvektor mit $E\Sexpr{i}$ $(X_\Sexpr{i} = \Sexpr{E})$, den Inputvektor entsprechend den gesamten Lagerbeständen von R1, R2 und R3.
+
+\begin{eqnarray*}
+  A = \Sexpr{B1}, x = \Sexpr{ov1}, b = \Sexpr{L1}
+\end{eqnarray*}
+
+Einsetzen in das Gleichungssystem $A \cdot x = b$ liefert:
+
+\begin{eqnarray*}
+\Sexpr{B1} \cdot \Sexpr{ov1} = \Sexpr{L1}
+\end{eqnarray*}
+
+Auflösen nach dem Outputvektor ergibt $\Sexpr{x1}$. Dementsprechend können von E1 $\Sexpr{x[1,1]}$, E2 $\Sexpr{x[2,1]}$ und E3 $\Sexpr{x[3,1]}$ hergestellt werden.
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{string}
+%% \exsolution{\Sexpr{a}}

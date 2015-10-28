@@ -1,0 +1,47 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+a <- sample(seq (5000,60000, by=5000), 1)
+m <- sample(seq (50,350, by=50), 1)
+j <- sample(seq (10,40, by=5), 1)
+
+z <- sample(seq (2,6, by=1), 1)
+z1 <- z/100
+z2 <- z1+1
+
+## QUESTION/ANSWER GENERATION
+aE <- a*z2^j
+mE <- m*(12+(z1*11)/2)
+jE <- mE*(z2^j-1)/(z2-1)
+kE <- jE+aE
+
+@
+
+
+
+\begin{question}
+
+Ein Anfangskapital von \Sexpr{a} € wird ab dem 01.01.2014 \Sexpr{j} Jahre lang jeweils am Monatsende um \Sexpr{m} € aufgestockt. Der Zinssatz beträgt \Sexpr{z}\% pro Jahr. Welches Endkapital ist nach \Sexpr{j} Jahren vorhanden? 
+
+\end{question}
+
+
+
+\begin{solution}
+
+\begin{itemize}
+  \item Das Anfangskapital verzinst sich auf $\Sexpr{a} \cdot \Sexpr{z2}^{\Sexpr{j}} = \Sexpr{round(aE,2)}$
+	\item Die monatlichen Zahlungen haben jeweils einen Jahresendwert von $R_k^{nach} = \Sexpr{m} \cdot \left(12 + \frac{\Sexpr{z1} \cdot 11}{2}\right) = \Sexpr{round(mE,2)}$
+	\item $R_k$ entspricht wiederum eine jährlich nachschüssig gezahlten Jahresrate einer \Sexpr{j} jährigen Zeitrente. Deren Endwert beträgt dann $R_20^{nach} = \Sexpr{round(mE,2)} \cdot \frac{\Sexpr{z2}^{\Sexpr{j}} - 1}{\Sexpr{z2} - 1} = \Sexpr{round(jE,2)}$
+	\item Am Ende ist also ein Kapital in Höhe von $\Sexpr{round(aE,2)} + \Sexpr{round(jE,2)}= \Sexpr{round(kE,2)}$ vorhanden.
+\end{itemize}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(kE,2)}}
+%% \exname{Rentenrechnung - Zeitrente}
+%% \extol{0.5}

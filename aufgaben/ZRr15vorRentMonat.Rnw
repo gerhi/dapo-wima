@@ -1,0 +1,60 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+k <- sample(seq (5000,10000, by=100), 1)
+
+dd <- sample(1:30, 1)
+dd1<-30-dd
+mm <- sample(1:12, 1)
+mm1 <- 12-mm
+ddmm <- 30*mm1+dd1
+yy <- sample(30:40, 1)
+yy1 <- yy-16
+yy2 <- yy-2
+yy3 <- yy-1
+
+z <- sample(seq (2,7, by=0.5), 1)
+z1 <- z/100
+z2 <- z1+1
+
+## QUESTION/ANSWER GENERATION
+r1 <- k*(1+z1*ddmm/360)
+r2 <- r1*z2^yy1
+r3 <- r2*z1
+r4 <- r3*z2
+r5 <- r4/(12+(z1*13)/2)
+
+@
+
+
+
+\begin{question}
+
+Der Herr K. findet auf seinem Weg Geld, ziemlich viel Geld, \Sexpr{k} €. Er legt dieses am \Sexpr{dd}.\Sexpr{mm}.2014 zu einem jährlichen Zinssatz von \Sexpr{z}\% an. Ab dem 01.01.20\Sexpr{yy} möchte er sich die jeweils im Vorjahr gezahlten Zinsen als monatlich gleichbleibende vorschüssige Rente auszahlen lassen. Wie hoch wird die Ratenzahlung jeweils sein?
+
+\end{question}
+
+
+
+\begin{solution}
+
+Ab dem 01.01.20\Sexpr{yy} sollen die angefallenen Zinsen ausbezahlt werden. Daher müssen wir wissen, wie viel Zinsen im Jahr davor angefallen sind. Dafür müssen wir wissen, wie hoch das Kapital am Anfang des Jahres 20\Sexpr{yy3} war. 
+\begin{itemize}
+  \item Zuerst wird das Kapital im Jahr 2014 verzinst, und zwar für \Sexpr{dd1} Tage im ersten Monat und dann für \Sexpr{mm1} Monate zu je 30 Tagen, insgesamt also für \Sexpr{ddmm} Tage. Damit fallen Zinsen in Höhe von $\Sexpr{k} \cdot (1 + \Sexpr{z1} \cdot \frac{\Sexpr{ddmm}}{360}) = \Sexpr{round(r1,2)}$
+	\item Diese Kapital wird nun weitere \Sexpr{yy1} Jahre verzinst, so dass Ende 20\Sexpr{yy2} bzw. Anfang 20\Sexpr{yy3} ein Kapital in Höhe von $\Sexpr{round(r1,2)} \cdot \Sexpr{z2}^{\Sexpr{yy1}} = \Sexpr{round(r2,2)}$ vorhanden ist.
+	\item Auf dieses werden Zinsen in Höhe von $\Sexpr{round(r2,2)} \cdot \Sexpr{z1} = \Sexpr{round(r3,2)}$ gezahlt.
+	\item Die Zinsen (des Vorjahres) stehen am Jahres\emph{anfang} zur Verfügung. Wenn diese nun mittels der Formel für das Jahresäquivalent monatlicher Ratenzahlungen auf die Monate verteilt werden sollen, benötigen wir aber den Wert zum Jahresende. Somit müssen wir die \Sexpr{round(r3,2)} noch auf das Jahresende aufzinsen: $\Sexpr{round(r3,2)} \cdot \Sexpr{z2} = \Sexpr{round(r4,2)}$
+	\item Diese sind nun als vorschüssige monatliche Rente aufzuteilen: $\Sexpr{round(r4,2)} = R \cdot (12 + \frac{\Sexpr{z1} \cdot 13}{2}) \Rightarrow R = \Sexpr{round(r5,2)}$.
+\end{itemize}
+Herr K. kann sich also jeweils am Monatsanfang \Sexpr{round(r5,2)} € auszahlen lassen. Wahnsinn, oder?
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(r4,2)}}
+%% \exname{Rentenrechnung - maximale vorschüssige Rente}
+%% \extol{0.5}
+

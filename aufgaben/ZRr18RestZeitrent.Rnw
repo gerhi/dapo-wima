@@ -1,0 +1,47 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+a <- sample(as.integer(seq(100000,150000, by=1)), 1)
+m <- sample(seq(150,350, by=50), 1)
+j <- sample(seq(8,15, by=1), 1)
+
+z <- sample(seq(1.5,2.5, by=0.1), 1)
+z1 <- z/100
+z2 <- z1+1
+
+## QUESTION/ANSWER GENERATION
+aE <- a*z2^j
+mE <- m*(12+(z1*13)/2)
+jE <- mE*(z2^j-1)/(z2-1)
+kE <- aE-jE
+
+@
+
+
+
+\begin{question}
+
+Ein mit \Sexpr{z}\% verzinstes Sparkonto weist ein Guthaben von \Sexpr{a} € auf. Auf welchen Betrag ist das Guthaben gesunken, wenn \Sexpr{j} Jahre lang jeweils am Monatsanfang \Sexpr{m} € abgehoben werden?
+
+\end{question}
+
+
+
+\begin{solution}
+
+\begin{itemize}
+  \item Das Guthaben würde ohne Auszahlungen nach \Sexpr{j} Jahren $\Sexpr{a} \cdot \Sexpr{z2}^{\Sexpr{j}} = \Sexpr{round(aE,2)}$ betragen.
+	\item Die monatliche Rate von \Sexpr{m} € entspricht einem Jahresendwert in Höhe von $R_k = \Sexpr{m} \cdot (12 + \frac{\Sexpr{z1} \cdot 13}{2}) = \Sexpr{round(mE,2)}$
+	\item Betrachtet man dieses als die jährlich nachschüssig gezahlte Rate einer \Sexpr{j} jährigen Zeitrente so erhält man einen Endbetrag von $R_{\Sexpr{j}}^{nach} = \Sexpr{round(mE,2)} \cdot \frac{\Sexpr{z2}^{\Sexpr{j}} - 1}{\Sexpr{z2} - 1} = \Sexpr{round(jE,2)}$
+	\item Damit haben wir noch ein Guthaben in Höhe von $\Sexpr{round(aE,2)} - \Sexpr{round(jE,2)} = \Sexpr{round(kE,2)}$.
+\end{itemize}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(kE,2)}}
+%% \exname{Rentenrechnung - Restkapital bei Zeitrente}
+%% \extol{0.5}

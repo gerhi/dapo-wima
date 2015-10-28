@@ -1,0 +1,47 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+k <- sample(seq (30000,60000, by=5000), 1)
+e <- sample(as.integer(seq(100000,150000, by=10000)), 1)
+a <- sample(seq (10000,30000, by=5000), 1)
+
+
+## QUESTION/ANSWER GENERATION
+w <- a/(1.04-1)
+w2 <- w+k
+w3 <- w+e
+w4 <- log(w3/w2)/log(1.04)
+
+@
+
+
+
+\begin{question}
+
+Alf Igel gewinnt Ende des Jahres 2014 einen Wettbewerb und bekommt \Sexpr{k} € Preisgeld. Von seinen laufenden Einnahmen sind zum Jahresende jeweils \Sexpr{a} € übrig, die er zusätzlich anlegen kann. Wie lange muss Alf noch sparen, wenn er mit einem Zinssatz von 4\% rechnet und mindestens \Sexpr{e} € als Startkapital für eine angestrebte Selbstständigkeit benötigt. 
+
+\end{question}
+
+
+
+\begin{solution}
+
+\begin{align*}
+  && \Sexpr{e} &= \Sexpr{k} \cdot 1,04^n + \Sexpr{a} \cdot \frac{1,04^n -1}{1,04 - 1}  | \text{\Sexpr{a} mit Nenner verrechnen}\\
+	&\Leftrightarrow& \Sexpr{e} &= \Sexpr{k} \cdot 1,04^n + \Sexpr{round(w,2)} \cdot (1,04^n - 1)  | \text{einklammern}\\
+	&\Leftrightarrow& \Sexpr{e} &= \Sexpr{k} \cdot 1,04^n + \Sexpr{round(w,2)} \cdot 1,04^n - \Sexpr{round(w,2)}  | +\Sexpr{round(w,2)}; 1,04^n \text{ ausklammern}\\
+	&\Leftrightarrow& \Sexpr{round(w3,2)} &= (\Sexpr{k} + \Sexpr{round(w,2)}) \cdot 1,04^n  | :\Sexpr{round(w2,2)} \\
+	&\Leftrightarrow& \frac{\Sexpr{round(w3,2)}}{\Sexpr{round(w2,2)}} &= 1,04^n \\
+	&\Leftrightarrow& n &= \frac{\log(\frac{\Sexpr{round(w3,2)}}{\Sexpr{round(w2,2)}})}{\log(1,04)} \\
+	&\Leftrightarrow& n &= \Sexpr{round(w4,2)}
+\end{align*}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(w4,2)}}
+%% \exname{Zinsrechnung - Zeit bis zur Summe X}
+%% \extol{0.5}

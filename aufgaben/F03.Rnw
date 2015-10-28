@@ -1,0 +1,170 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+ok <- FALSE
+
+while (!ok){
+A <- sample(seq(-8,-4, by=1), 1)
+B <- sample(seq(5,10),1)
+C <- sample(seq(0.001, 0.005, by = 0.001),1)
+D <- sample(seq(10,50),1)
+E <- sample(seq(100,3000, by=10),1)
+
+## QUESTION/ANSWER GENERATION
+Cs <- C * 2
+
+gmin <- Cs/(6*B^A)
+
+newton <- function(f, tol=1E-12,x0=1,N=20) {
+  h <- 0.001
+  i <- 1; x1 <- x0
+  p <- numeric(N)
+  while (i<=N) {
+    df.dx <- (f(x0+h)-f(x0))/h
+    x1 <- (x0 - (f(x0)/df.dx))
+    p[i] <- x1
+    i <- i + 1
+    if (abs(x1-x0) < tol) break
+    x0 <- x1
+  }
+  return(p[1:(i-1)])
+}
+
+f <- function(x) {2 * B^A * x^3  - C * x^2 - E}
+
+n <- newton(f, x0=1, N=1000)
+nE <- tail(n, n=1)
+
+bmin <- C/(2*B^A)
+kmin <- (B^A*bmin^2)-(C*bmin)+D
+
+nEmin <- B^A * nE^2  - C * nE + D + E/nE
+
+
+
+ok <- bmin > kmin & bmin > 0 & bmin < 1000 & kmin > 0
+
+a <- sprintf("Siehe Lösungsteil!")
+}
+
+
+@
+
+
+\begin{question}
+
+Die Gesamtkosten Ihres Unternehmens werden durch folgende Funktion beschrieben:
+
+\begin{eqnarray*}
+K(x) = \Sexpr{B}^{\Sexpr{A}} \cdot x^3  - \Sexpr{C} \cdot x^2 + \Sexpr{D}\cdot x + \Sexpr{E}
+\end{eqnarray*}
+
+(a) Wie lautet die Gleichung der Grenzkostenfunktion?
+
+(b) Wie lautet die Gleichung der variablen Stückkostenfunktion?
+
+(c) Wie lautet die Gleichung der Stückkostenfunktion?
+
+(d) Wie hoch sind die minimalen Grenzkosten?
+
+(e) Bestimmen Sie das Betriebsminimum.
+
+(f) Bestimmen Sie das Betriebsoptimum.
+
+(g) Bestimmen Sie die minimalen Variablen Kosten.
+
+(h) Wieso werden die errechneten Kostenwerte auch kurzfristige bzw. langfristige Preisuntergrenze genannt?
+
+\end{question}
+
+\begin{solution}
+
+zu (a):
+
+\begin{eqnarray*}
+K'(x) = 3 \cdot \Sexpr{B}^{\Sexpr{A}} \cdot x^2  - \Sexpr{Cs} \cdot x + \Sexpr{D}
+\end{eqnarray*}
+
+zu (b):
+
+\begin{eqnarray*}
+k_v(x) = \frac{K_v(x)}{x} = \Sexpr{B}^{\Sexpr{A}} \cdot x^2  - \Sexpr{C} \cdot x + \Sexpr{D}
+\end{eqnarray*}
+
+zu (c):
+
+\begin{eqnarray*}
+k(x) = \Sexpr{B}^{\Sexpr{A}} \cdot x^2  - \Sexpr{C} \cdot x + \Sexpr{D} + \frac{\Sexpr{E}}{x}
+\end{eqnarray*}
+
+zu (d):
+
+Die Grenzkostenfunktion wurde unter (a) ermittelt.
+
+Notwendige Bedingung für ein Minimum in diesem Fall: $K''(x) = 0$ (Die erste Ableitung der Funktion, in diesem Fall von $K'(x)$ wird 0.)
+
+\begin{eqnarray*}
+K''(x) = 6 \cdot \Sexpr{B}^{\Sexpr{A}} \cdot x  - \Sexpr{Cs} = 0 \Leftrightarrow x = \Sexpr{round(gmin,2)}
+\end{eqnarray*}
+
+Hinreichende Bedingung hier: $K'''(x)>0$
+
+\begin{eqnarray*}
+K'''(x) = 6 \cdot \Sexpr{B}^{\Sexpr{A}} > 0 \rightarrow lokales Minimum
+\end{eqnarray*}
+
+zu (e):
+
+Betriebsminimum: Minimum der variablen Stückkosten  (siehe b)
+
+Notwendige Bedingung: $k'_v(x)=0$
+
+\begin{eqnarray*}
+k'_v(x) = 2 \cdot \Sexpr{B}^{\Sexpr{A}} \cdot x  - \Sexpr{C} = 0 \Leftrightarrow x = \Sexpr{round(bmin,2)}
+\end{eqnarray*}
+
+Hinreichende Bedingung: $k''_v(x)>0$
+
+\begin{eqnarray*}
+k''_v(x) = 2 \cdot \Sexpr{B}^{\Sexpr{A}} > 0 \rightarrow lokales Minimum
+\end{eqnarray*}
+
+Lösung: $x_{min} = \Sexpr{round(bmin,2)}$
+
+zu (f):
+
+Betriebsoptimum: Minimum der totalen Stückkosten (siehe (c))
+
+Notwendige Bedingung: $k'(x)=0$
+
+\begin{eqnarray*}
+k(x) = 2 \cdot \Sexpr{B}^{\Sexpr{A}} \cdot x  - \Sexpr{C} - \frac{\Sexpr{E}}{x^2} = 0 \\
+\Leftrightarrow 2 \cdot \Sexpr{B}^{\Sexpr{A}} \cdot x^3  - \Sexpr{C} \cdot x^2 - \Sexpr{E} = 0
+\end{eqnarray*}
+
+Wie häufig ist die notwendige Bedingung für ein Minimum der Stückkosten nur mittels Newtonschen Näherungsverfahren zu lösen. Es wird eine hinreichende Genauigkeit von $x=\Sexpr{round(nE,2)}$ erreicht.
+
+Hinreichende Bedingung: $k''(x)>0$
+
+\begin{eqnarray*}
+k''(x) = 2 \cdot \Sexpr{B}^{\Sexpr{A}} + \frac{\Sexpr{E}}{x^3} > 0 \rightarrow lokales Minimum
+\end{eqnarray*}
+
+zu (g):
+
+Achtung: Die Menge, die zu den minimalen durchschnittlichen variablen Kosten führt, wurde unter (e) bereits ermittelt.
+
+Funktionswert: $k_v(x = \Sexpr{round(bmin,2)}) = \Sexpr{round(kmin,2)}$
+
+Ebenso wurde die Menge, die zu minimalen durchschnittlichen Kosten führt, unter (f) bereits ermittelt.
+
+Funktionswert: $k(x=\Sexpr{round(nE,2)}) = \Sexpr{round(nEmin,2)}$
+
+zu (h):
+
+Bei einem Preis von \Sexpr{round(kmin,2)} GE sind die durch die Produktion erzeugten Kosten gerade gedeckt. Jede Produktion bei einem Preis unter \Sexpr{round(kmin,2)} GE würde dazu führen, dass nicht einmal die durch die Produktion direkt verursachten Kosten gedeckt würden. Daher wird dieser Preis kurzfristige Preisuntergrenze genannt. Langfristig müssen auch die Fixkosten durch den Umsatz gedeckt werden. Langfristig muss also ein Preis von mindestens \Sexpr{round(nEmin,2)} GE erzielt werden, damit das Unternehmen rentabel arbeitet. Daher spricht man von langfristiger Preisuntergrenze.
+
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{string}
+%% \exsolution{\Sexpr{a}}

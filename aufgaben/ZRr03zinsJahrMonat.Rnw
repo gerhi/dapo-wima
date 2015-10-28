@@ -1,0 +1,44 @@
+<<echo=FALSE, results=hide>>=
+
+## DATA GENERATION
+z <- sample(seq (1,6, by=1), 1)
+z1 <- z/100+1
+
+## QUESTION/ANSWER GENERATION
+p <- 12*(z1^(1/12)-1)
+pEnd <- p*100
+
+@
+
+
+
+\begin{question}
+
+Welcher jährlicher Zinssatz führt bei monatlicher Zinsgutschrift zur gleichen Verzinsung wie ein Jahreszinsatz von \Sexpr{z}\% bei jährlicher Zinsgutschrift (30/360)?
+
+\end{question}
+
+
+\begin{solution}
+\begin{align*}
+& & K_0 \cdot \Sexpr{z1} &= K_0 \cdot \left(1 + \frac{p/100}{12}\right)^{12} &&| :K_0 \\
+&\Leftrightarrow& \Sexpr{z1} &= \left(1 + \frac{p/100}{12}\right)^{12} &&| \sqrt[12]{} \\
+&\Leftrightarrow& \sqrt[12]{\Sexpr{z1}} &= 1 + \frac{p/100}{12} &&| -1 \\
+&\Leftrightarrow& \sqrt[12]{\Sexpr{z1}} - 1 &= \frac{p/100}{12} &&| \cdot 12 \\
+&\Leftrightarrow& p\% &= 12 \cdot (\sqrt[12]{\Sexpr{z1}} - 1) \\
+&\Leftrightarrow& p\% &= \Sexpr{round(p,4)}
+\end{align*}
+
+Also würde ein Zinssatz von \Sexpr{round(pEnd,2)}\% zum gleichen jährlichen Ergebnis führen.
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(pEnd,2)}}
+%% \exname{Zinsrechnung jährlicher Zinssatz bei monatlicher Zinsgutschrift}
+%% \extol{0.5}
+

@@ -1,0 +1,32 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+
+## QUESTION/ANSWER GENERATION
+a <- paste("Es können jedes Jahr die Zinsen ausbezahlt werden.")
+@
+
+
+
+\begin{question}
+
+Teilt man die Formel zur Berechnung des Barwertes der nachschüssig bezahlten ewigen Rente durch den Faktor $\frac{1}{q-1}$, so erhält man eine Formel zur Berechnung der Rate R. Erläutern Sie diese Formel mit eigenen Worten.
+
+\end{question}
+
+
+
+\begin{solution}
+
+Es können jedes Jahr die Zinsen ausbezahlt werden.
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{string}
+%% \exsolution{\Sexpr{a}}
+%% \exname{Rentenrechnung - maximale vorschüssige Rente}
+%% \extol{0.5}
+

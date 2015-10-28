@@ -1,0 +1,42 @@
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+a <- sample(as.integer(seq(100000,150000, by=5000)), 1)
+j <- sample(seq(15,40, by=5), 1)
+
+z <- sample(seq(3,5, by=0.25), 1)
+z1 <- z/100
+z2 <- z1+1
+
+## QUESTION/ANSWER GENERATION
+jS <- a/((z2^j-1)/(z2-1))
+mS <- jS/(12+(z1*13)/2)
+
+@
+
+
+
+\begin{question}
+
+Welchen Betrag müssen Sie jeweils zu Beginn eines Monates auf ein Konto einzahlen, wenn Sie am Ende einer \Sexpr{j} jährigen Sparzeit bei einem Zinssatz von \Sexpr{z}\% ein Guthaben von \Sexpr{a} € angespart haben wollen?
+
+\end{question}
+
+
+
+\begin{solution}
+
+\begin{itemize}
+  \item Zuerst ermitteln wir, welchen Betrag wir \emph{jährlich} sparen müssten. Da wir den Betrag in einem zweiten Schritt noch mittels der Formel für die unterjährliche Rentenzahlung auf die Monate verteilen werden, benötigen wir die nachschüssige jährliche Rate. Die \Sexpr{j} jährige nachschüssige Zeitrente ergibt: $\Sexpr{a} = R_k \cdot \frac{\Sexpr{z2}^{\Sexpr{j}} - 1}{\Sexpr{z2} - 1} \Rightarrow R_k = \Sexpr{round(jS,2)}$
+	\item Diesen jährlichen Betrag teilen wir nun in monatlich vorschüssige Raten auf: $\Sexpr{round(jS,2)} = R \cdot (12 + \frac{\Sexpr{z1} \cdot 13}{2}) \Rightarrow R = \Sexpr{round(mS,2)}$.
+\end{itemize}
+
+\end{solution}
+
+
+
+%% META INFORMATION
+
+%% \extype{num}
+%% \exsolution{\Sexpr{round(mS,2)}}
+%% \exname{Rentenrechnung - monatlicher Beitrag für Zielkapital}
+%% \extol{0.5}

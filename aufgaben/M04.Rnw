@@ -1,0 +1,82 @@
+<<echo=FALSE, results=hide>>=
+## auxiliary function for display of matrices
+toLatex.matrix <- function(object, olat = FALSE, ...)
+{
+  ## workaround for OLAT's mis-layouting of matrices
+  olat <- if(is.null(olat)) FALSE else !identical(olat, FALSE)
+  collapse <- if(olat) " & \\\\phantom{.} & " else " & "
+  nc <- if(olat) ncol(object) * 2 - 1 else ncol(object)
+  
+  ## collapse matrix to LaTeX code lines
+  tmp <- apply(object, 1, paste, collapse = collapse)
+  tmp <- paste(tmp, collapse = " \\\\\\\\ ")
+  tmp <- paste("\\\\left( \\\\begin{array}{",
+    paste(rep("r", nc), collapse = ""), "} ",
+    tmp,
+    " \\\\end{array} \\\\right)", sep = "")
+  return(tmp)
+}
+@
+
+
+<<echo=FALSE, results=hide>>=
+## DATA GENERATION
+absatzM1 <- matrix(data = sample(seq(10,100, by=10),2), nrow = 1, ncol = 2)
+preise <- matrix(data = sample(seq(100,200, by=10),2), nrow = 1, ncol = 2)
+tPreise <- t(preise)
+umsatzM1 <- absatzM1 %*% tPreise
+
+absatzG <- rbind(absatzM1, sample(seq(10,100, by=10),2))
+
+umsatzG <- absatzG %*% tPreise
+
+a <- sprintf("Umsatz: Monat 1: %d, Monat 2: %d",umsatzM1,umsatzG[2,1])
+@
+
+
+\begin{question}
+
+\begin{enumerate}
+  \item Wir verkaufen zwei Produkte, P1 und P2. Die Absatzzahlen betragen für P1 \Sexpr{absatzM1[1,1]} Stück, für P2 \Sexpr{absatzM1[1,2]} Stück. Notieren Sie den Sachverhalt in Matrizenschreibweise.
+  \item Die Preise für die Produkte betragen für P1 \Sexpr{preise[1,1]} Euro, für P2 \Sexpr{preise[1,2]} Euro. Notieren Sie den Sachverhalt in Matrizenschreibweise.
+  \item Ermitteln Sie mittels Matrizenrechnung, welchen Umsatz wir erzielen.
+  \item Die Absatzzahlen für den zweiten Monat betragen \Sexpr{absatzG[2,1]} Stück P1 und \Sexpr{absatzG[2,2]} Stück P2. Ergänzen Sie die Matrix aus Aufgabe (a) so, dass die Information aufgenommen werden kann.
+  \item Ermitteln Sie mittels Matrizenrechnung, welchen Umsatz wir in den Monaten jeweils erzielen.
+\end{enumerate}
+
+\end{question}
+
+
+
+\begin{solution}
+
+zu (a):
+
+Die Information ergibt einen Vektor: $\Sexpr{toLatex(absatzM1)}$. In der Zeile finden wir die Stückzahl, in den beiden "`Spalten"' die Produkte. Somit haben wir eine (1 $\times$ 2) bzw. (Anzahl $\times$ Produkte) - Matrix.
+
+zu (b):
+
+Wenn wir die Information aufschreiben, ohne schon an die spätere Multiplikation zu denken, notieren wir vermutlich wieder einen Zeilenverktor: $\Sexpr{toLatex(preise)}$. In der Zeile finden wir die Preisinformation zu den in den Spalten stehenden Produkten. Somit haben wir wieder eine (1 $\times$ 2) bzw. (Euro $\times$ Produkte) - Matrix.
+
+zu (c):
+
+Ohne Matrizenrechnung ist die Aufgabe, den Umsatz zu errechnen, einfach lösbar. Wir multiplizieren die jeweilige Menge mit dem jeweiligen Preis und addieren dann die Werte, also $\Sexpr{absatzM1[1,1]} \cdot \Sexpr{preise[1,1]} + \Sexpr{absatzM1[1,2]} \cdot \Sexpr{preise[1,2]}$.
+
+Die notierten Matrizen lassen sich jedoch so nicht multiplizieren, da wir zwei (1 $\times$ 2) - Matrizen haben, die nicht multiplizierbar sind. Wir müssen also den zweiten Vektor transponieren. (Zur Erinnerung: Ein Vektor ist auch eine Matrix, aber eben eine mit nur einer Zeile oder nur einer Spalte). Damit erhalten wir die Rechnung:
+
+$\Sexpr{toLatex(absatzM1)} \cdot \Sexpr{toLatex(tPreise)} = (\Sexpr{absatzM1[1,1]} \cdot \Sexpr{preise[1,1]} + \Sexpr{absatzM1[1,2]} \cdot \Sexpr{preise[1,2]})$, also genau die Rechnung die wir schon oben als richtig erkannt haben.
+
+Noch etwas sollte man sich an diesem einfachen Beispiel klar machen: Wir hätten, wenn wir nicht transponiert hätten, eine (Anzahl $\times$ Produkte) mit einer (Euro $\times$ Produkte) - Matrix multipliziert. Selbst wenn diese mathematisch möglich gewesen wäre, hätten wir keine sinnvollen Werte erhalten. Man kann es sich so merken, dass bei einer Multiplikation zweier Matrizen, die reale Sachverhalte widerspiegeln, die Spaltendefinition der linken Matrix mit der Zeilendefinition der rechten Matrix korrespondieren, in der Regel übereinstimmen sollte. Man mache sich daher den sachlichen Inhalt der Matrizen wie oben beschrieben klar, bevor man multipliziert.
+
+zu (d):
+
+Wir ergänzen die Mengenmatrix um eine weitere Zeile: $\Sexpr{toLatex(absatzG)}$. Wieder haben wir eine (Anzahl $\times$ Produke) - Matrix.
+
+zu (e):
+
+Zur Ermittlung müssen wir wieder unseren Spaltenvektor heranziehen: $\Sexpr{toLatex(absatzG)} \cdot \Sexpr{toLatex(tPreise)} = \Sexpr{toLatex(umsatzG)}$. Wir erhalten eine Matrix (Monate $\times$ Euro).
+\end{solution}
+
+%% META-INFORMATION
+%% \extype{string}
+%% \exsolution{\Sexpr{a}}
